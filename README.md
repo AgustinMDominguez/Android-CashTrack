@@ -7,4 +7,3 @@
 Developers:
 
  * Agustín Domínguez
- * Valentina Solange Vispo

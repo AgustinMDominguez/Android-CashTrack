@@ -11,7 +11,7 @@
         android:theme="@style/Theme.CashTrack"
         android:fullBackupContent="true">
         <activity
-            android:name=".history.HistoryActivity"
+            android:name=".history.ui.HistoryActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,9 +1,10 @@
-package org.amdoige.cashtrack.history
+package org.amdoige.cashtrack.history.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import org.amdoige.cashtrack.databinding.ActivityHistoryBinding
+import org.amdoige.cashtrack.history.HistoryViewModel
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBinding

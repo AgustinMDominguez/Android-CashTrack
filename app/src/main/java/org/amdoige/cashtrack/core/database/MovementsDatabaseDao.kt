@@ -1,14 +1,11 @@
 package org.amdoige.cashtrack.core.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import java.time.Instant
 
 @Dao
 interface MovementsDatabaseDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(movement: Movement)
 
     @Update
@@ -17,8 +14,8 @@ interface MovementsDatabaseDao {
     @Query("SELECT * FROM movements_table WHERE timestamp = :key")
     fun get(key: Instant): Movement?
 
-    @Query("DELETE * FROM movements_table WHERE timestamp = :key")
-    fun delete(key: Instant)
+    @Delete
+    fun delete(movement: Movement)
 
     @Query("SELECT COUNT(timestamp) from movements_table")
     fun databaseSize(): Int

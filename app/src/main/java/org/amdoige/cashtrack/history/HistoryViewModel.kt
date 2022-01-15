@@ -35,4 +35,13 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
             _movements.postValue(newList)
         }
     }
+
+    fun addMovement(movement: Movement, overwriteOnTimestampUsed: Boolean = true) {
+        viewModelScope.launch {
+            val timestampIsUsed = historyRepository.isTimestampUsed(movement.timestamp)
+            if (!timestampIsUsed || overwriteOnTimestampUsed) {
+                historyRepository.postMovement(movement)
+            }
+        }
+    }
 }

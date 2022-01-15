@@ -16,29 +16,33 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
         from: Instant? = null,
         to: Instant? = null,
         amountLimit: Int? = null
-    ): List<Movement> {
-        return withContext(Dispatchers.IO) {
-            val start = from ?: movementsDatabase.dao.firstTimestamp()
-            val end = to ?: movementsDatabase.dao.lastTimestamp()
-            if (amountLimit == null) {
-                movementsDatabase.dao.range(start, end)
-            } else {
-                movementsDatabase.dao.rangeWithLimit(start, end, amountLimit)
-            }
+    ): List<Movement> = withContext(Dispatchers.IO) {
+        val start = from ?: movementsDatabase.dao.firstTimestamp()
+        val end = to ?: movementsDatabase.dao.lastTimestamp()
+        if (amountLimit == null) {
+            movementsDatabase.dao.range(start, end)
+        } else {
+            movementsDatabase.dao.rangeWithLimit(start, end, amountLimit)
         }
     }
 
-//    suspend fun getMovementBefore(movement: Movement): Movement? {
-//        val movementList = getMovements(to = movement.timestamp, amountLimit = 2)
-//        return if (movementList.size < 2) null else movementList[0]
-//    }
-//
-//    suspend fun getMovementAfter(movement: Movement): Movement? {
-//        val movementList = getMovements(from = movement.timestamp, amountLimit = 2)
-//        return if (movementList.size < 2) null else movementList[1]
-//    }
-
     suspend fun postMovement(movement: Movement) = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.insert(movement)
+        if (movementsDatabase.dao.get(movement.timestamp) == null) {
+            movementsDatabase.dao.insert(movement)
+        } else {
+            movementsDatabase.dao.update(movement)
+        }
+    }
+
+    suspend fun deleteMovement(movement: Movement) = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.delete(movement)
+    }
+
+    suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.get(movement.timestamp)?.equals(movement) ?: false
+    }
+
+    suspend fun isTimestampUsed(timestamp: Instant): Boolean = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.get(timestamp) != null
     }
 }

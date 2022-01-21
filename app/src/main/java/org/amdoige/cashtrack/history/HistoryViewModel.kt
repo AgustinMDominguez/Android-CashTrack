@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
 import timber.log.Timber
+import java.text.DecimalFormat
 
 class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     private val batchFetchSize = 20
@@ -12,10 +13,27 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
     val movements: LiveData<List<Movement>>
         get() = _movements
 
+    private val _balance: MutableLiveData<Double> = MutableLiveData()
+    val balance: LiveData<Double>
+        get() = _balance
+
+    val balanceString: LiveData<String> = Transformations.map(balance) { balance: Double ->
+        val sign = if (balance > 0.0) "" else "-"
+        val roundedAmount = DecimalFormat("#.00").format(balance)
+        "$sign $ $roundedAmount"
+    }
+
     val movementsSize: LiveData<Int> = Transformations.map(movements) { list -> list.size }
 
     init {
+        updateBalance()
         fetchMoreMovements()
+    }
+
+    private fun updateBalance() {
+        viewModelScope.launch() {
+            _balance.value = historyRepository.getBalance()
+        }
     }
 
     fun fetchMoreMovements() {
@@ -51,6 +69,8 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         viewModelScope.launch {
             historyRepository.postMovement(newMovement)
             _movements.value = listOf()
+            val currentBalance = _balance.value ?: 0.0
+            _balance.value = currentBalance + newMovement.amount
             fetchMoreMovements()
         }
     }
@@ -79,7 +99,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
 //        }
 //    }
 
-    fun lastMovementOrNull(): Movement? {
+    private fun lastMovementOrNull(): Movement? {
         return try {
             _movements.value?.last()
         } catch (emptyListException: NoSuchElementException) {

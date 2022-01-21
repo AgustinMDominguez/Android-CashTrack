@@ -31,4 +31,7 @@ interface MovementsDatabaseDao {
 
     @Query("SELECT milliseconds FROM movements_table ORDER BY milliseconds DESC LIMIT 1")
     fun lastTimestamp(): Long
+
+    @Query("SELECT SUM(amount) FROM movements_table")
+    fun getBalance(): Double
 }

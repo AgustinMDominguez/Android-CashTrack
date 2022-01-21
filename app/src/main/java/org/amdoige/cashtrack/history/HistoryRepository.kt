@@ -8,6 +8,10 @@ import timber.log.Timber
 
 class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
 
+    suspend fun getBalance(): Double = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.getBalance()
+    }
+
     suspend fun getAmountOfMovements(): Int = withContext(Dispatchers.IO) {
         movementsDatabase.dao.databaseSize()
     }

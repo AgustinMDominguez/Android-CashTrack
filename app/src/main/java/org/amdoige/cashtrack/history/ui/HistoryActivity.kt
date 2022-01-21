@@ -18,7 +18,6 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHistoryBinding.inflate(layoutInflater)
-        binding.balanceAmount.text = "Current Balance is $99.99"
         binding.recyclerMovements.adapter = HistoryMovementsAdapter()
 
         val historyRepository = HistoryRepository(MovementsDatabase.getInstance(this))
@@ -26,22 +25,26 @@ class HistoryActivity : AppCompatActivity() {
             this,
             HistoryViewModel.Companion.Factory(historyRepository)
         )[HistoryViewModel::class.java]
-        setupObservers()
-        setupListeners()
+        setLivedataObservers()
+        setListeners()
         setContentView(binding.root)
     }
 
-    private fun setupObservers() {
+    private fun setLivedataObservers() {
         val movementsObserver = Observer<List<Movement>> { newList ->
             (binding.recyclerMovements.adapter as HistoryMovementsAdapter).movements = newList
             Timber.i("Observed a change in livedata!: $newList")
         }
         viewModel.movements.observe(this, movementsObserver)
+
+        val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
+        viewModel.balanceString.observe(this, balanceObserver)
     }
 
-    private fun setupListeners() {
+    private fun setListeners() {
         binding.addRandomMovementButton.setOnClickListener {
-            val amount = (10..1000).random().toDouble() + (0..99).random().toDouble() / 10
+            val sign = if ((0..1).random() == 0) 1.0 else -1.0
+            val amount = sign * (10..1000).random().toDouble() + (0..99).random().toDouble() / 100.0
             viewModel.newImmediateMovement(amount, "random Movement", "some descr")
         }
     }

@@ -34,7 +34,7 @@ class HistoryActivity : AppCompatActivity() {
     private fun setupObservers() {
         val movementsObserver = Observer<List<Movement>> { newList ->
             (binding.recyclerMovements.adapter as HistoryMovementsAdapter).movements = newList
-            Timber.i("Observed a change in livedata!")
+            Timber.i("Observed a change in livedata!: $newList")
         }
         viewModel.movements.observe(this, movementsObserver)
     }

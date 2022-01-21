@@ -11,24 +11,24 @@ interface MovementsDatabaseDao {
     @Update
     fun update(movement: Movement)
 
-    @Query("SELECT * FROM movements_table WHERE timestamp = :key")
-    fun get(key: Instant): Movement?
+    @Query("SELECT * FROM movements_table WHERE id = :key")
+    fun get(key: Long): Movement?
 
     @Delete
     fun delete(movement: Movement)
 
-    @Query("SELECT COUNT(timestamp) from movements_table")
+    @Query("SELECT COUNT(id) from movements_table")
     fun databaseSize(): Int
 
-    @Query("SELECT * FROM movements_table WHERE timestamp BETWEEN :start AND :end ORDER BY timestamp DESC")
-    fun range(start: Instant, end: Instant): List<Movement>
+    @Query("SELECT * FROM movements_table WHERE milliseconds BETWEEN :startMilli AND :endMilli ORDER BY milliseconds DESC")
+    fun range(startMilli: Long, endMilli: Long): List<Movement>
 
-    @Query("SELECT * FROM movements_table WHERE timestamp BETWEEN :start AND :end ORDER BY timestamp DESC LIMIT :limit")
-    fun rangeWithLimit(start: Instant, end: Instant, limit: Int): List<Movement>
+    @Query("SELECT * FROM movements_table WHERE milliseconds BETWEEN :startMilli AND :endMilli ORDER BY milliseconds DESC LIMIT :limit")
+    fun rangeWithLimit(startMilli: Long, endMilli: Long, limit: Int): List<Movement>
 
-    @Query("SELECT FIRST(timestamp) FROM movements_table")
-    fun firstTimestamp(): Instant
+    @Query("SELECT milliseconds FROM movements_table ORDER BY milliseconds ASC LIMIT 1")
+    fun firstTimestamp(): Long
 
-    @Query("SELECT LAST(timestamp) FROM movements_table")
-    fun lastTimestamp(): Instant
+    @Query("SELECT milliseconds FROM movements_table ORDER BY milliseconds DESC LIMIT 1")
+    fun lastTimestamp(): Long
 }

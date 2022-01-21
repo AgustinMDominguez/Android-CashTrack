@@ -19,12 +19,10 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
 
     fun fetchMoreMovements() {
         viewModelScope.launch {
-            val from = when {
-                _movements.value.isNullOrEmpty() -> null
-                else -> _movements.value?.last()?.timestamp
-            }
-            val moreMovements =
-                historyRepository.getMovements(from = from, amountLimit = batchFetchSize)
+            val moreMovements = historyRepository.getMovements(
+                fromMilli = lastMovementOrNull()?.milliseconds,
+                amountLimit = batchFetchSize
+            )
             val newList: List<Movement> = when {
                 _movements.value.isNullOrEmpty() -> moreMovements
                 else -> listOf(
@@ -36,11 +34,66 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         }
     }
 
-    fun addMovement(movement: Movement, overwriteOnTimestampUsed: Boolean = true) {
+    fun newMovement(
+        timestampMilli: Long,
+        amount: Double,
+        title: String,
+        description: String? = null,
+    ) {
+        val newMovement = Movement(
+            milliseconds = timestampMilli,
+            amount = amount,
+            title = title,
+            description = description ?: ""
+        )
         viewModelScope.launch {
-            val timestampIsUsed = historyRepository.isTimestampUsed(movement.timestamp)
-            if (!timestampIsUsed || overwriteOnTimestampUsed) {
-                historyRepository.postMovement(movement)
+            historyRepository.postMovement(newMovement)
+            _movements.value = listOf()
+            fetchMoreMovements()
+        }
+    }
+
+    fun newImmediateMovement(amount: Double, title: String, description: String? = "") {
+        val timestampMilli = System.currentTimeMillis()
+        newMovement(timestampMilli, amount, title, description)
+    }
+
+//    fun updateMovement(
+//        movement: Movement,
+//        timestamp: Long? = null,
+//        amount: Double? = null,
+//        title: String? = null,
+//        description: String? = null
+//    ) {
+//
+//    }
+
+//    fun addMovement(movement: Movement, overwriteOnTimestampUsed: Boolean = true) {
+//        viewModelScope.launch {
+//            val timestampIsUsed = historyRepository.isTimestampUsed(movement.movementTimestamp)
+//            if (!timestampIsUsed || overwriteOnTimestampUsed) {
+//                historyRepository.postMovement(movement)
+//            }
+//        }
+//    }
+
+    fun lastMovementOrNull(): Movement? {
+        return try {
+            _movements.value?.last()
+        } catch (emptyListException: NoSuchElementException) {
+            null
+        }
+    }
+
+    companion object {
+        class Factory(private val historyRepository: HistoryRepository) :
+            ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("unchecked_cast")
+                if (modelClass.isAssignableFrom(HistoryViewModel::class.java)) {
+                    return HistoryViewModel(historyRepository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
     }

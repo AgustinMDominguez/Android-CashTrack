@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.MovementsDatabase
-import java.time.Instant
 
 class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
 
@@ -13,21 +12,21 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
     }
 
     suspend fun getMovements(
-        from: Instant? = null,
-        to: Instant? = null,
+        fromMilli: Long? = null,
+        toMilli: Long? = null,
         amountLimit: Int? = null
     ): List<Movement> = withContext(Dispatchers.IO) {
-        val start = from ?: movementsDatabase.dao.firstTimestamp()
-        val end = to ?: movementsDatabase.dao.lastTimestamp()
+        val startMilli = fromMilli ?: movementsDatabase.dao.firstTimestamp()
+        val endMilli = toMilli ?: movementsDatabase.dao.lastTimestamp()
         if (amountLimit == null) {
-            movementsDatabase.dao.range(start, end)
+            movementsDatabase.dao.range(startMilli, endMilli)
         } else {
-            movementsDatabase.dao.rangeWithLimit(start, end, amountLimit)
+            movementsDatabase.dao.rangeWithLimit(startMilli, endMilli, amountLimit)
         }
     }
 
     suspend fun postMovement(movement: Movement) = withContext(Dispatchers.IO) {
-        if (movementsDatabase.dao.get(movement.timestamp) == null) {
+        if (movementsDatabase.dao.get(movement.id) == null) {
             movementsDatabase.dao.insert(movement)
         } else {
             movementsDatabase.dao.update(movement)
@@ -39,10 +38,10 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
     }
 
     suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.get(movement.timestamp)?.equals(movement) ?: false
+        movementsDatabase.dao.get(movement.id)?.equals(movement) ?: false
     }
 
-    suspend fun isTimestampUsed(timestamp: Instant): Boolean = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.get(timestamp) != null
+    suspend fun isTimestampUsed(timestampMilli: Long): Boolean = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.range(timestampMilli, timestampMilli).isNotEmpty()
     }
 }

@@ -9,6 +9,7 @@ import org.amdoige.cashtrack.core.database.MovementsDatabase
 import org.amdoige.cashtrack.databinding.ActivityHistoryBinding
 import org.amdoige.cashtrack.history.HistoryRepository
 import org.amdoige.cashtrack.history.HistoryViewModel
+import timber.log.Timber
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBinding
@@ -33,6 +34,7 @@ class HistoryActivity : AppCompatActivity() {
     private fun setupObservers() {
         val movementsObserver = Observer<List<Movement>> { newList ->
             (binding.recyclerMovements.adapter as HistoryMovementsAdapter).movements = newList
+            Timber.i("Observed a change in livedata!")
         }
         viewModel.movements.observe(this, movementsObserver)
     }

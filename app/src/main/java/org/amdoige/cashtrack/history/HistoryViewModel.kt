@@ -3,6 +3,7 @@ package org.amdoige.cashtrack.history
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
+import timber.log.Timber
 
 class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     private val batchFetchSize = 20
@@ -30,7 +31,8 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
                     moreMovements.subList(1, moreMovements.size)
                 ).flatten()
             }
-            _movements.postValue(newList)
+            _movements.value = newList
+            Timber.i("fetchMoreMovements put ${_movements.value?.size ?: 0} on livedata")
         }
     }
 

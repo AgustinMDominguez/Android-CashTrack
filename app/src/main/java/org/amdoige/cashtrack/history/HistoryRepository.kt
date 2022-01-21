@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.MovementsDatabase
+import timber.log.Timber
 
 class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
 
@@ -31,6 +32,7 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
         } else {
             movementsDatabase.dao.update(movement)
         }
+        Timber.i("New Movement added to Database: ${movement.toString()}")
     }
 
     suspend fun deleteMovement(movement: Movement) = withContext(Dispatchers.IO) {

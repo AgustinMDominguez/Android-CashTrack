@@ -17,7 +17,10 @@ interface MovementsDatabaseDao {
     @Delete
     fun delete(movement: Movement)
 
-    @Query("SELECT COUNT(id) from movements_table")
+    @Query("DELETE FROM movements_table")
+    fun clear()
+
+    @Query("SELECT COUNT(id) FROM movements_table")
     fun databaseSize(): Int
 
     @Query("SELECT * FROM movements_table WHERE milliseconds BETWEEN :startMilli AND :endMilli ORDER BY milliseconds DESC")
@@ -34,4 +37,7 @@ interface MovementsDatabaseDao {
 
     @Query("SELECT SUM(amount) FROM movements_table")
     fun getBalance(): Double
+
+    @Query("SELECT * FROM movements_table ORDER BY milliseconds LIMIT :offset OFFSET :limit") // FIXME https://www2.sqlite.org/cvstrac/wiki?p=ScrollingCursor
+    fun getPage(limit: Int, offset: Int): List<Movement>
 }

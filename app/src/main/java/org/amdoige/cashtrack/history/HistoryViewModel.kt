@@ -1,20 +1,29 @@
 package org.amdoige.cashtrack.history
 
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.history.data.HistoryRepository
 import timber.log.Timber
 import java.text.DecimalFormat
 
 class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     private val batchFetchSize = 20
 
+    val movementsPagingData = Pager(PagingConfig(pageSize = batchFetchSize)) {
+        historyRepository.pagingSource
+    }.liveData.cachedIn(viewModelScope)
+
     private val _movements: MutableLiveData<List<Movement>> = MutableLiveData()
     val movements: LiveData<List<Movement>>
         get() = _movements
 
     private val _balance: MutableLiveData<Double> = MutableLiveData()
-    val balance: LiveData<Double>
+    private val balance: LiveData<Double>
         get() = _balance
 
     val balanceString: LiveData<String> = Transformations.map(balance) { balance: Double ->
@@ -27,7 +36,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
 
     init {
         updateBalance()
-        fetchMoreMovements()
+//        fetchMoreMovements()
     }
 
     private fun updateBalance() {
@@ -36,23 +45,23 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         }
     }
 
-    fun fetchMoreMovements() {
-        viewModelScope.launch {
-            val moreMovements = historyRepository.getMovements(
-                fromMilli = lastMovementOrNull()?.milliseconds,
-                amountLimit = batchFetchSize
-            )
-            val newList: List<Movement> = when {
-                _movements.value.isNullOrEmpty() -> moreMovements
-                else -> listOf(
-                    _movements.value ?: listOf(),
-                    moreMovements.subList(1, moreMovements.size)
-                ).flatten()
-            }
-            _movements.value = newList
-            Timber.i("fetchMoreMovements put ${_movements.value?.size ?: 0} on livedata")
-        }
-    }
+//    fun fetchMoreMovements() {
+//        viewModelScope.launch {
+//            val moreMovements = historyRepository.getMovements(
+//                fromMilli = lastMovementOrNull()?.milliseconds,
+//                amountLimit = batchFetchSize
+//            )
+//            val newList: List<Movement> = when {
+//                _movements.value.isNullOrEmpty() -> moreMovements
+//                else -> listOf(
+//                    _movements.value ?: listOf(),
+//                    moreMovements.subList(1, moreMovements.size)
+//                ).flatten()
+//            }
+//            _movements.value = newList
+//            Timber.i("fetchMoreMovements put ${_movements.value?.size ?: 0} on livedata")
+//        }
+//    }
 
     fun newMovement(
         timestampMilli: Long,
@@ -71,7 +80,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
             _movements.value = listOf()
             val currentBalance = _balance.value ?: 0.0
             _balance.value = currentBalance + newMovement.amount
-            fetchMoreMovements()
+//            fetchMoreMovements()
         }
     }
 
@@ -79,6 +88,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         val timestampMilli = System.currentTimeMillis()
         newMovement(timestampMilli, amount, title, description)
     }
+
 
 //    fun updateMovement(
 //        movement: Movement,
@@ -104,6 +114,13 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
             _movements.value?.last()
         } catch (emptyListException: NoSuchElementException) {
             null
+        }
+    }
+
+    fun deleteAllMovements() {
+        viewModelScope.launch {
+            historyRepository.deleteAllMovements()
+            historyRepository.pagingSource.invalidate()
         }
     }
 

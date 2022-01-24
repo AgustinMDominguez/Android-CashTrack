@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history
+package org.amdoige.cashtrack.history.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -7,6 +7,9 @@ import org.amdoige.cashtrack.core.database.MovementsDatabase
 import timber.log.Timber
 
 class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
+    val pagingSource = HistoryPagingSource(::pagingSourceLoader)
+
+    fun get
 
     suspend fun getBalance(): Double = withContext(Dispatchers.IO) {
         movementsDatabase.dao.getBalance()
@@ -43,11 +46,23 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
         movementsDatabase.dao.delete(movement)
     }
 
+    suspend fun deleteAllMovements() = withContext(Dispatchers.IO) {
+        movementsDatabase.dao.clear()
+    }
+
     suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
         movementsDatabase.dao.get(movement.id)?.equals(movement) ?: false
     }
 
     suspend fun isTimestampUsed(timestampMilli: Long): Boolean = withContext(Dispatchers.IO) {
         movementsDatabase.dao.range(timestampMilli, timestampMilli).isNotEmpty()
+    }
+
+    private suspend fun pagingSourceLoader(page: Int, pageSize: Int): List<Movement> {
+        return withContext(Dispatchers.IO) {
+            val offset = page * pageSize
+            Timber.i("Calling getPage($pageSize,$offset)")
+            movementsDatabase.dao.getPage(pageSize, offset) // FIXME: See dao method
+        }
     }
 }

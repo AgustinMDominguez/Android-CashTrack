@@ -1,5 +1,6 @@
 package org.amdoige.cashtrack.core.database
 
+import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -25,6 +26,11 @@ data class Movement(
 //    }
 
     companion object {
+        object Comparator : DiffUtil.ItemCallback<Movement>() {
+            override fun areItemsTheSame(p0: Movement, p1: Movement): Boolean = p0.id == p1.id
+
+            override fun areContentsTheSame(p0: Movement, p1: Movement): Boolean = p0 == p1
+        }
 
 //        @Ignore
 //        fun fromInstant(

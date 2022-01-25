@@ -64,6 +64,6 @@ class HistoryActivity : AppCompatActivity() {
     private fun addRandomMovement() {
         val sign = if ((0..1).random() == 0) 1.0 else -1.0
         val amount = sign * (10..1000).random().toDouble() + (0..99).random().toDouble() / 100.0
-        viewModel.newImmediateMovement(amount, "random Movement", "some descr")
+        viewModel.newImmediateMovement(amount, "random Movement", "some description")
     }
 }

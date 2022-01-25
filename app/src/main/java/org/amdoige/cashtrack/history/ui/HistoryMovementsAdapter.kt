@@ -9,7 +9,7 @@ import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Movement
 
 
-class HistoryMovementsAdapter() :
+class HistoryMovementsAdapter :
     PagingDataAdapter<Movement, HistoryMovementsAdapter.ViewHolder>(Movement.Companion.Comparator) {
 
     override fun onCreateViewHolder(

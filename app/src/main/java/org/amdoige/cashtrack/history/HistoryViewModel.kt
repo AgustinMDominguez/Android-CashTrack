@@ -8,7 +8,7 @@ import org.amdoige.cashtrack.history.data.HistoryRepository
 import java.text.DecimalFormat
 
 class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
-    private val modelPageSize = 20
+    private val modelPageSize = 10
 
     val movementsPagingData = Pager(
         PagingConfig(pageSize = modelPageSize),
@@ -33,7 +33,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         viewModelScope.launch { _balance.value = historyRepository.getBalance() }
     }
 
-    fun newMovement(
+    private fun newMovement(
         timestampMilli: Long,
         amount: Double,
         title: String,

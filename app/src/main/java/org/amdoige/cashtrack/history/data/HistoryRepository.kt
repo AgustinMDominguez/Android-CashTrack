@@ -1,5 +1,6 @@
 package org.amdoige.cashtrack.history.data
 
+import androidx.paging.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
@@ -7,9 +8,15 @@ import org.amdoige.cashtrack.core.database.MovementsDatabase
 import timber.log.Timber
 
 class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
-    val pagingSource = HistoryPagingSource(::pagingSourceLoader)
+    private var pagingSource = HistoryPagingSource(::pagingSourceLoader)
 
-    fun get
+    fun getValidPagingSource(): PagingSource<Int, Movement> {
+        if (pagingSource.invalid) {
+            Timber.i("Recreating PagingSource")
+            pagingSource = HistoryPagingSource(::pagingSourceLoader)
+        }
+        return pagingSource
+    }
 
     suspend fun getBalance(): Double = withContext(Dispatchers.IO) {
         movementsDatabase.dao.getBalance()
@@ -33,21 +40,24 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
         }
     }
 
-    suspend fun postMovement(movement: Movement) = withContext(Dispatchers.IO) {
-        if (movementsDatabase.dao.get(movement.id) == null) {
-            movementsDatabase.dao.insert(movement)
-        } else {
-            movementsDatabase.dao.update(movement)
+    suspend fun postMovement(movement: Movement) {
+        withContext(Dispatchers.IO) {
+            if (movementsDatabase.dao.get(movement.id) == null) {
+                movementsDatabase.dao.insert(movement)
+            } else {
+                movementsDatabase.dao.update(movement)
+            }
         }
-        Timber.i("New Movement added to Database: ${movement.toString()}")
+        pagingSource.invalidate()
     }
 
     suspend fun deleteMovement(movement: Movement) = withContext(Dispatchers.IO) {
         movementsDatabase.dao.delete(movement)
     }
 
-    suspend fun deleteAllMovements() = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.clear()
+    suspend fun deleteAllMovements() {
+        withContext(Dispatchers.IO) { movementsDatabase.dao.clear() }
+        pagingSource.invalidate()
     }
 
     suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
@@ -60,9 +70,11 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
 
     private suspend fun pagingSourceLoader(page: Int, pageSize: Int): List<Movement> {
         return withContext(Dispatchers.IO) {
-            val offset = page * pageSize
-            Timber.i("Calling getPage($pageSize,$offset)")
-            movementsDatabase.dao.getPage(pageSize, offset) // FIXME: See dao method
+            val offset = (page - 1) * pageSize
+            // FIXME: See dao method
+            val movements: List<Movement> = movementsDatabase.dao.getPage(pageSize, offset)
+            Timber.i("Call to getPage($pageSize,$offset) returned ${movements.size} movements")
+            movements
         }
     }
 }

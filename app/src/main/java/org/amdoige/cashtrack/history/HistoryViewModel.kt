@@ -1,67 +1,37 @@
 package org.amdoige.cashtrack.history
 
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import androidx.paging.liveData
+import androidx.paging.*
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.history.data.HistoryRepository
-import timber.log.Timber
 import java.text.DecimalFormat
 
 class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
-    private val batchFetchSize = 20
+    private val modelPageSize = 20
 
-    val movementsPagingData = Pager(PagingConfig(pageSize = batchFetchSize)) {
-        historyRepository.pagingSource
-    }.liveData.cachedIn(viewModelScope)
+    val movementsPagingData = Pager(
+        PagingConfig(pageSize = modelPageSize),
+        null,
+        { historyRepository.getValidPagingSource() }
+    )
+        .liveData
+        .cachedIn(viewModelScope)
 
-    private val _movements: MutableLiveData<List<Movement>> = MutableLiveData()
-    val movements: LiveData<List<Movement>>
-        get() = _movements
-
-    private val _balance: MutableLiveData<Double> = MutableLiveData()
-    private val balance: LiveData<Double>
-        get() = _balance
-
-    val balanceString: LiveData<String> = Transformations.map(balance) { balance: Double ->
+    private val _balance: MutableLiveData<Double> = MutableLiveData(0.0)
+    val balanceString: LiveData<String> = Transformations.map(_balance) { balance: Double ->
         val sign = if (balance > 0.0) "" else "-"
-        val roundedAmount = DecimalFormat("#.00").format(balance)
+        val roundedAmount = DecimalFormat("#.00").format(_balance.value ?: 0.0)
         "$sign $ $roundedAmount"
     }
 
-    val movementsSize: LiveData<Int> = Transformations.map(movements) { list -> list.size }
-
     init {
         updateBalance()
-//        fetchMoreMovements()
     }
 
     private fun updateBalance() {
-        viewModelScope.launch() {
-            _balance.value = historyRepository.getBalance()
-        }
+        viewModelScope.launch { _balance.value = historyRepository.getBalance() }
     }
-
-//    fun fetchMoreMovements() {
-//        viewModelScope.launch {
-//            val moreMovements = historyRepository.getMovements(
-//                fromMilli = lastMovementOrNull()?.milliseconds,
-//                amountLimit = batchFetchSize
-//            )
-//            val newList: List<Movement> = when {
-//                _movements.value.isNullOrEmpty() -> moreMovements
-//                else -> listOf(
-//                    _movements.value ?: listOf(),
-//                    moreMovements.subList(1, moreMovements.size)
-//                ).flatten()
-//            }
-//            _movements.value = newList
-//            Timber.i("fetchMoreMovements put ${_movements.value?.size ?: 0} on livedata")
-//        }
-//    }
 
     fun newMovement(
         timestampMilli: Long,
@@ -77,10 +47,12 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         )
         viewModelScope.launch {
             historyRepository.postMovement(newMovement)
-            _movements.value = listOf()
-            val currentBalance = _balance.value ?: 0.0
-            _balance.value = currentBalance + newMovement.amount
-//            fetchMoreMovements()
+            val currentBalance = _balance.value
+            if (currentBalance == null) {
+                updateBalance()
+            } else {
+                _balance.value = currentBalance + newMovement.amount
+            }
         }
     }
 
@@ -89,38 +61,10 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         newMovement(timestampMilli, amount, title, description)
     }
 
-
-//    fun updateMovement(
-//        movement: Movement,
-//        timestamp: Long? = null,
-//        amount: Double? = null,
-//        title: String? = null,
-//        description: String? = null
-//    ) {
-//
-//    }
-
-//    fun addMovement(movement: Movement, overwriteOnTimestampUsed: Boolean = true) {
-//        viewModelScope.launch {
-//            val timestampIsUsed = historyRepository.isTimestampUsed(movement.movementTimestamp)
-//            if (!timestampIsUsed || overwriteOnTimestampUsed) {
-//                historyRepository.postMovement(movement)
-//            }
-//        }
-//    }
-
-    private fun lastMovementOrNull(): Movement? {
-        return try {
-            _movements.value?.last()
-        } catch (emptyListException: NoSuchElementException) {
-            null
-        }
-    }
-
     fun deleteAllMovements() {
         viewModelScope.launch {
             historyRepository.deleteAllMovements()
-            historyRepository.pagingSource.invalidate()
+            updateBalance()
         }
     }
 

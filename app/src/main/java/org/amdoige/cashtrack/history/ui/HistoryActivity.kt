@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.MovementsDatabase
 import org.amdoige.cashtrack.databinding.ActivityHistoryBinding
@@ -13,13 +16,14 @@ import org.amdoige.cashtrack.history.HistoryViewModel
 import timber.log.Timber
 
 class HistoryActivity : AppCompatActivity() {
+    private var movementsAdapter = HistoryMovementsAdapter()
     private lateinit var binding: ActivityHistoryBinding
     private lateinit var viewModel: HistoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHistoryBinding.inflate(layoutInflater)
-        binding.recyclerMovements.adapter = HistoryMovementsAdapter()
+        binding.recyclerMovements.adapter = movementsAdapter
 
         val historyRepository = HistoryRepository(MovementsDatabase.getInstance(this))
         viewModel = ViewModelProvider(
@@ -32,32 +36,10 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun setLivedataObservers() {
-//        val movementsObserver = Observer<List<Movement>> { newList ->
-//            (binding.recyclerMovements.adapter as HistoryMovementsAdapter).movements = newList
-//            Timber.i("Observed a change in livedata! Now has ${newList.size} movements")
-//        }
-//        viewModel.movements.observe(this, movementsObserver)
-
         val movementPagerObserver = Observer<PagingData<Movement>> { pagingData ->
-            (binding.recyclerMovements.adapter as HistoryMovementsAdapter).submitData(
-                lifecycle,
-                pagingData
-            )
-            Timber.i("Observed a livedata pager change!")
+            movementsAdapter.submitData(lifecycle, pagingData)
         }
         viewModel.movementsPagingData.observe(this, movementPagerObserver)
-
-//        (binding.recyclerMovements.adapter as HistoryMovementsAdapter).submitData(
-//            lifecycle,
-//            viewModel.movementsPager.
-//        )
-//
-//        lifecycleScope.launch {
-//            viewModel.movementsPager.observe()
-//            val paginatorObserver = Observer<PagingData<Movement>> { pagingData ->
-//                (binding.recyclerMovements.adapter as HistoryMovementsAdapter).submitData(lifecycle)
-//            }
-//        }
 
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
         viewModel.balanceString.observe(this, balanceObserver)
@@ -68,16 +50,15 @@ class HistoryActivity : AppCompatActivity() {
 
         binding.addOneHundredMovementsButton.setOnClickListener {
             Timber.i("Adding many movements!")
-            for (a in 1..100) {
-                addRandomMovement()
+            lifecycleScope.launch {
+                for (a in 1..100) {
+                    addRandomMovement()
+                    delay(1)
+                }
             }
             Timber.i("Done Adding Movements")
         }
-
-        binding.deleteMovementsButton.setOnClickListener {
-            viewModel.deleteAllMovements()
-
-        }
+        binding.deleteMovementsButton.setOnClickListener { viewModel.deleteAllMovements() }
     }
 
     private fun addRandomMovement() {

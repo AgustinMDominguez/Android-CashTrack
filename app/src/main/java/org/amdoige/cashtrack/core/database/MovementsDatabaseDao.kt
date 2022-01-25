@@ -1,7 +1,6 @@
 package org.amdoige.cashtrack.core.database
 
 import androidx.room.*
-import java.time.Instant
 
 @Dao
 interface MovementsDatabaseDao {
@@ -38,6 +37,9 @@ interface MovementsDatabaseDao {
     @Query("SELECT SUM(amount) FROM movements_table")
     fun getBalance(): Double
 
-    @Query("SELECT * FROM movements_table ORDER BY milliseconds LIMIT :offset OFFSET :limit") // FIXME https://www2.sqlite.org/cvstrac/wiki?p=ScrollingCursor
+    @Query("SELECT * FROM movements_table ORDER BY milliseconds DESC LIMIT :limit OFFSET :offset") // FIXME https://www2.sqlite.org/cvstrac/wiki?p=ScrollingCursor
     fun getPage(limit: Int, offset: Int): List<Movement>
+
+    @Query("SELECT * FROM movements_table ORDER BY milliseconds")
+    fun getAllPages(): List<Movement>
 }

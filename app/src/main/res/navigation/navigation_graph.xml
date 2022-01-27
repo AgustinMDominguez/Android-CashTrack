@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation_graph">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/historyFragment">
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="org.amdoige.cashtrack.history.ui.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_billfoldsFragment"
+            app:destination="@id/billfoldsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/billfoldsFragment"
+        android:name="org.amdoige.cashtrack.billfolds.ui.BillfoldsFragment"
+        android:label="fragment_billfolds"
+        tools:layout="@layout/fragment_billfolds" >
+        <action
+            android:id="@+id/action_billfoldsFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
 </navigation>

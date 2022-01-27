@@ -6,8 +6,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.databinding.ActivityHistoryBinding
@@ -53,7 +55,9 @@ class HistoryActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 for (a in 1..100) {
                     addRandomMovement(forceAmount = (1000 - a).toDouble())
-                    delay(1)
+                    withContext(Dispatchers.IO) {
+                        delay(10)
+                    }
                 }
             }
             Timber.i("Done Adding Movements")

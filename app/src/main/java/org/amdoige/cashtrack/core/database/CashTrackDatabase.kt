@@ -6,20 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [Movement::class], version = 3, exportSchema = false)
-abstract class MovementsDatabase : RoomDatabase() {
-    abstract val dao: MovementsDatabaseDao
+abstract class CashTrackDatabase : RoomDatabase() {
+    abstract val dao: CashTrackDatabaseDao
 
     companion object {
         @Volatile
-        private var INSTANCE: MovementsDatabase? = null
+        private var INSTANCE: CashTrackDatabase? = null
 
-        fun getInstance(context: Context): MovementsDatabase {
+        fun getInstance(context: Context): CashTrackDatabase {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        MovementsDatabase::class.java,
+                        CashTrackDatabase::class.java,
                         "movements_database"
                     )
                         .fallbackToDestructiveMigration()

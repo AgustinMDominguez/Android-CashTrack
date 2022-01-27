@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.core.database.Movement
-import org.amdoige.cashtrack.core.database.MovementsDatabase
+import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.databinding.ActivityHistoryBinding
 import org.amdoige.cashtrack.history.data.HistoryRepository
 import org.amdoige.cashtrack.history.HistoryViewModel
@@ -25,7 +25,7 @@ class HistoryActivity : AppCompatActivity() {
         binding = ActivityHistoryBinding.inflate(layoutInflater)
         binding.recyclerMovements.adapter = movementsAdapter
 
-        val historyRepository = HistoryRepository(MovementsDatabase.getInstance(this))
+        val historyRepository = HistoryRepository(CashTrackDatabase.getInstance(this))
         viewModel = ViewModelProvider(
             this,
             HistoryViewModel.Companion.Factory(historyRepository)

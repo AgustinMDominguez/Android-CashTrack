@@ -4,11 +4,11 @@ import androidx.paging.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
-import org.amdoige.cashtrack.core.database.MovementsDatabase
+import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import timber.log.Timber
 
-class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
-    private val pagingIntermediary = PagingDatabaseIntermediary(movementsDatabase)
+class HistoryRepository(private val cashTrackDatabase: CashTrackDatabase) {
+    private val pagingIntermediary = PagingDatabaseIntermediary(cashTrackDatabase)
     private var pagingSource = HistoryPagingSource(pagingIntermediary::pageLoader)
 
     fun getValidPagingSource(): PagingSource<Int, Movement> {
@@ -25,26 +25,26 @@ class HistoryRepository(private val movementsDatabase: MovementsDatabase) {
     }
 
     suspend fun getBalance(): Double = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.getBalance()
+        cashTrackDatabase.dao.getBalance()
     }
 
     suspend fun postMovement(movement: Movement) {
         withContext(Dispatchers.IO) {
-            if (movementsDatabase.dao.get(movement.id) == null) {
-                movementsDatabase.dao.insert(movement)
+            if (cashTrackDatabase.dao.get(movement.id) == null) {
+                cashTrackDatabase.dao.insert(movement)
             } else {
-                movementsDatabase.dao.update(movement)
+                cashTrackDatabase.dao.update(movement)
             }
         }
         invalidatePagingSource()
     }
 
     suspend fun deleteAllMovements() {
-        withContext(Dispatchers.IO) { movementsDatabase.dao.clear() }
+        withContext(Dispatchers.IO) { cashTrackDatabase.dao.clear() }
         invalidatePagingSource()
     }
 
     suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
-        movementsDatabase.dao.get(movement.id)?.equals(movement) ?: false
+        cashTrackDatabase.dao.get(movement.id)?.equals(movement) ?: false
     }
 }

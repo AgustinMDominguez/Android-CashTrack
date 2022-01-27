@@ -3,10 +3,10 @@ package org.amdoige.cashtrack.history.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
-import org.amdoige.cashtrack.core.database.MovementsDatabase
+import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import timber.log.Timber
 
-class PagingDatabaseIntermediary(private val movementsDatabase: MovementsDatabase) {
+class PagingDatabaseIntermediary(private val cashTrackDatabase: CashTrackDatabase) {
     private var pageMap: MutableMap<Int, Long> = mutableMapOf() // page -> movement timestamp
     private var currentPageSize: Int? = null
 
@@ -23,14 +23,14 @@ class PagingDatabaseIntermediary(private val movementsDatabase: MovementsDatabas
         return withContext(Dispatchers.IO) {
             val movementsPlusOne: List<Movement> = when {
                 page == 1 -> {
-                    movementsDatabase.dao.getPageByOffset(pageSize + 1, 0)
+                    cashTrackDatabase.dao.getPageByOffset(pageSize + 1, 0)
                 }
                 pageMap.containsKey(page) -> {
-                    movementsDatabase.dao.getPageByComparison(pageMap.getValue(page), pageSize + 1)
+                    cashTrackDatabase.dao.getPageByComparison(pageMap.getValue(page), pageSize + 1)
                 }
                 else -> {
                     val offset = (page - 1) * pageSize
-                    movementsDatabase.dao.getPageByOffset(pageSize + 1, offset)
+                    cashTrackDatabase.dao.getPageByOffset(pageSize + 1, offset)
                 }
             }
             if (movementsPlusOne.size == pageSize + 1) {

@@ -3,7 +3,7 @@ package org.amdoige.cashtrack.core.database
 import androidx.room.*
 
 @Dao
-interface MovementsDatabaseDao {
+interface CashTrackDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(movement: Movement)
 

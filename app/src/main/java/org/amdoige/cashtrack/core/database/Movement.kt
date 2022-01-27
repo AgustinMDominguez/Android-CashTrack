@@ -11,7 +11,8 @@ data class Movement(
     var amount: Double = 0.0,
     var milliseconds: Long = System.currentTimeMillis(),
     var title: String = "",
-    var description: String = ""
+    var description: String = "",
+    var walletId: Long? = null
 ) {
     companion object {
         object Comparator : DiffUtil.ItemCallback<Movement>() {

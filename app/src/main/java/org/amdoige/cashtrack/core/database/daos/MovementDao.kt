@@ -12,7 +12,7 @@ interface MovementDao {
     fun update(movement: Movement)
 
     @Query("SELECT * FROM movements_table WHERE id = :key")
-    fun get(key: Long): Movement?
+    fun getMovement(key: Long): Movement?
 
     @Delete
     fun delete(movement: Movement)

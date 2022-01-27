@@ -30,7 +30,7 @@ class HistoryRepository(private val cashTrackDatabase: CashTrackDatabase) {
 
     suspend fun postMovement(movement: Movement) {
         withContext(Dispatchers.IO) {
-            if (cashTrackDatabase.dao.get(movement.id) == null) {
+            if (cashTrackDatabase.dao.getMovement(movement.id) == null) {
                 cashTrackDatabase.dao.insert(movement)
             } else {
                 cashTrackDatabase.dao.update(movement)
@@ -45,6 +45,6 @@ class HistoryRepository(private val cashTrackDatabase: CashTrackDatabase) {
     }
 
     suspend fun contains(movement: Movement): Boolean = withContext(Dispatchers.IO) {
-        cashTrackDatabase.dao.get(movement.id)?.equals(movement) ?: false
+        cashTrackDatabase.dao.getMovement(movement.id)?.equals(movement) ?: false
     }
 }

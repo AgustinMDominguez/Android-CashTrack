@@ -14,7 +14,7 @@ data class Wallet(
     var balance: Double = 0.0,
     var limit: Double = -1.0,
     var logo: String = Resources.getSystem().getString(R.string.default_wallet_logo),
-    var colorHex: String = "#008128",
+    var color: Int = Resources.getSystem().getColor(R.color.default_wallet_color, null),
 ) {
 
     companion object {

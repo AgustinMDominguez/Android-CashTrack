@@ -52,7 +52,7 @@ class HistoryActivity : AppCompatActivity() {
             Timber.i("Adding many movements!")
             lifecycleScope.launch {
                 for (a in 1..100) {
-                    addRandomMovement()
+                    addRandomMovement(forceAmount = (1000 - a).toDouble())
                     delay(1)
                 }
             }
@@ -61,9 +61,13 @@ class HistoryActivity : AppCompatActivity() {
         binding.deleteMovementsButton.setOnClickListener { viewModel.deleteAllMovements() }
     }
 
-    private fun addRandomMovement() {
-        val sign = if ((0..1).random() == 0) 1.0 else -1.0
-        val amount = sign * (10..1000).random().toDouble() + (0..99).random().toDouble() / 100.0
+    private fun addRandomMovement(forceAmount: Double? = null) {
+        val amount = forceAmount ?: run {
+            val sign = if ((0..1).random() == 0) 1.0 else -1.0
+            val units = (10..1000).random().toDouble()
+            val cents = (0..99).random().toDouble() / 100.0
+            sign * units + cents
+        }
         viewModel.newImmediateMovement(amount, "random Movement", "some description")
     }
 }

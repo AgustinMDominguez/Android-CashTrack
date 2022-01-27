@@ -37,8 +37,11 @@ interface MovementsDatabaseDao {
     @Query("SELECT SUM(amount) FROM movements_table")
     fun getBalance(): Double
 
-    @Query("SELECT * FROM movements_table ORDER BY milliseconds DESC LIMIT :limit OFFSET :offset") // FIXME https://www2.sqlite.org/cvstrac/wiki?p=ScrollingCursor
-    fun getPage(limit: Int, offset: Int): List<Movement>
+    @Query("SELECT * FROM movements_table ORDER BY milliseconds DESC LIMIT :limit OFFSET :offset")
+    fun getPageByOffset(limit: Int, offset: Int): List<Movement>
+
+    @Query("SELECT * FROM movements_table WHERE milliseconds <= :comparison ORDER BY milliseconds DESC LIMIT :limit")
+    fun getPageByComparison(comparison: Long, limit: Int): List<Movement>
 
     @Query("SELECT * FROM movements_table ORDER BY milliseconds")
     fun getAllPages(): List<Movement>

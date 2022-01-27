@@ -16,7 +16,7 @@ class HistoryPagingSource(private val loader: KSuspendFunction2<Int, Int, List<M
             val nextKey = if (newData.size < params.loadSize) null else pageNumber + 1
             LoadResult.Page(newData, prevKey, nextKey)
         } catch (e: Exception) {
-            Timber.e("Error fetching History Page", e)
+            Timber.e("Error fetching History Page: $e", e)
             LoadResult.Error(e)
         }
     }

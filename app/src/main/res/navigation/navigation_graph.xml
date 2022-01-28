@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/historyFragment"
         android:name="org.amdoige.cashtrack.history.ui.HistoryFragment"
-        android:label="fragment_history"
+        android:label="History Screen"
         tools:layout="@layout/fragment_history" >
         <action
             android:id="@+id/action_historyFragment_to_billfoldsFragment"
@@ -16,7 +16,7 @@
     <fragment
         android:id="@+id/billfoldsFragment"
         android:name="org.amdoige.cashtrack.billfolds.ui.BillfoldsFragment"
-        android:label="fragment_billfolds"
+        android:label="Wallet Screen"
         tools:layout="@layout/fragment_billfolds" >
         <action
             android:id="@+id/action_billfoldsFragment_to_historyFragment"

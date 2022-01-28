@@ -1,4 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">CashTrack</string>
-    <string name="default_wallet_logo" tools:ignore="ReferenceType">@drawable/ic_cashtrackwalletv1</string>
+    <string name="default_wallet_logo" tools:ignore="ReferenceType">@drawable/ic_cashtrack_wallet_1</string>
+    <string name="home_ic_title">Home</string>
+    <string name="wallets_ic_title">Wallets</string>
 </resources>

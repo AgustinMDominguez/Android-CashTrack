@@ -4,19 +4,20 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
 class UIStateViewModel : ViewModel() {
-    private val _currentScreen: MutableLiveData<MainFragments?> = null
-
+    private val _currentScreen: MutableLiveData<MainFragments?> = MutableLiveData(null)
     val currentScreen: LiveData<MainFragments?>
         get() = _currentScreen
 
-    fun switchScreens() {
-        viewModelScope.launch {
-            val screen = currentScreen.value ?: MainFragments.MOVEMENTS
-            _currentScreen.value = when (screen) {
-                MainFragments.MOVEMENTS -> MainFragments.BILLFOLDS
-                MainFragments.BILLFOLDS -> MainFragments.MOVEMENTS
-            }
-        }
+    fun toMovementsScreen() {
+        viewModelScope.launch { _currentScreen.value = MainFragments.MOVEMENTS }
+    }
+
+    fun toBillfoldsScreen() {
+        viewModelScope.launch { _currentScreen.value = MainFragments.BILLFOLDS }
+    }
+
+    fun ackScreenSwitch() {
+        viewModelScope.launch { _currentScreen.postValue(null) }
     }
 
     companion object {

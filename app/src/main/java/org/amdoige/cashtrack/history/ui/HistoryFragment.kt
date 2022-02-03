@@ -33,7 +33,7 @@ class HistoryFragment : Fragment() {
     private fun setListeners() {
         binding.toBillfoldsButton.setOnClickListener {
             Timber.i("TBR: Navigating to Billfolds!")
-            uiStateViewModel.switchScreens()
+            uiStateViewModel.toBillfoldsScreen()
         }
     }
 }

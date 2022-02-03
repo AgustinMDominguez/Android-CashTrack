@@ -27,9 +27,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLivedataObservers() {
-        val screenObserver = Observer<MainFragments> {
-            binding.bottomNavigation.selectedItemId =
-                bottomNavScreenMapping[it] ?: binding.bottomNavigation.menu.getItem(0).itemId
+        val screenObserver = Observer<MainFragments?> {
+            bottomNavScreenMapping[it]?.let { menuItemId ->
+                binding.bottomNavigation.selectedItemId = menuItemId
+                uiStateViewModel.ackScreenSwitch()
+            }
         }
         uiStateViewModel.currentScreen.observe(this, screenObserver)
     }

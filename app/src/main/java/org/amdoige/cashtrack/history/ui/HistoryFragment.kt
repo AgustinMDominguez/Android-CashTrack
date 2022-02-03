@@ -47,7 +47,6 @@ class HistoryFragment : Fragment() {
             HistoryViewModel.Companion.Factory(historyRepository)
         )[HistoryViewModel::class.java]
         setLivedataObservers()
-        setListeners()
     }
 
     private fun setLivedataObservers() {
@@ -58,24 +57,14 @@ class HistoryFragment : Fragment() {
 
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
         viewModel.balanceString.observe(this, balanceObserver)
-    }
 
-    private fun setListeners() {
-        binding.addRandomMovementButton.setOnClickListener { addRandomMovement() }
-
-        binding.addOneHundredMovementsButton.setOnClickListener {
-            Timber.i("Adding many movements!")
-            lifecycleScope.launch {
-                for (a in 1..100) {
-                    addRandomMovement(forceAmount = (1000 - a).toDouble())
-                    withContext(Dispatchers.IO) {
-                        delay(10)
-                    }
-                }
+        val addButtonObserver = Observer<Boolean> {
+            if (it) {
+                addRandomMovement()
+                uiStateViewModel.unpressAddButton()
             }
-            Timber.i("Done Adding Movements")
         }
-        binding.deleteMovementsButton.setOnClickListener { viewModel.deleteAllMovements() }
+        uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)
     }
 
     private fun addRandomMovement(forceAmount: Double? = null) {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import org.amdoige.cashtrack.databinding.FragmentBillfoldsBinding
 import org.amdoige.cashtrack.mainscreen.UIStateViewModel
 
@@ -21,5 +22,17 @@ class BillfoldsFragment : Fragment() {
     ): View {
         binding = FragmentBillfoldsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setLivedataObservers()
+    }
+
+    private fun setLivedataObservers() {
+        val addButtonObserver = Observer<Boolean> {
+            uiStateViewModel.unpressAddButton()
+        }
+        uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)
     }
 }

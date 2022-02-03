@@ -8,6 +8,18 @@ class UIStateViewModel : ViewModel() {
     val currentScreen: LiveData<MainFragments?>
         get() = _currentScreen
 
+    private val _addButtonPressed: MutableLiveData<Boolean> = MutableLiveData(false)
+    val addButtonPressed: LiveData<Boolean>
+        get() = _addButtonPressed
+
+    fun pressAddButton() {
+        viewModelScope.launch { _addButtonPressed.value = true }
+    }
+
+    fun unpressAddButton() {
+        viewModelScope.launch { _addButtonPressed.value = false }
+    }
+
     fun toMovementsScreen() {
         viewModelScope.launch { _currentScreen.value = MainFragments.MOVEMENTS }
     }

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpBottomNav()
         setLivedataObservers()
+        setListeners()
     }
 
     private fun setLivedataObservers() {
@@ -34,6 +35,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         uiStateViewModel.currentScreen.observe(this, screenObserver)
+    }
+
+    private fun setListeners() {
+        binding.addButton.setOnClickListener { uiStateViewModel.pressAddButton() }
     }
 
     private fun setUpBottomNav() {

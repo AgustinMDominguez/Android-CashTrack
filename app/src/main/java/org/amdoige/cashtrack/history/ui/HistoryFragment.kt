@@ -5,11 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
+import org.amdoige.cashtrack.mainscreen.MainFragments
+import org.amdoige.cashtrack.mainscreen.UIStateViewModel
 import timber.log.Timber
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
+    private val uiStateViewModel: UIStateViewModel by activityViewModels {
+        UIStateViewModel.Companion.Factory()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +33,7 @@ class HistoryFragment : Fragment() {
     private fun setListeners() {
         binding.toBillfoldsButton.setOnClickListener {
             Timber.i("TBR: Navigating to Billfolds!")
-//            val action = HistoryFragmentDirections.actionNavigationHomeToNavigationBillfolds()
-//            findNavController().navigate(action)
+            uiStateViewModel.switchScreens()
         }
     }
 }

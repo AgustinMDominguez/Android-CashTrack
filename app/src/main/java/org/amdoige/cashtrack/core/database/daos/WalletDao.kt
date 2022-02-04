@@ -19,4 +19,7 @@ interface WalletDao {
 
     @Delete
     fun delete(wallet: Wallet)
+
+    @Query("SELECT SUM(amount) FROM movements_table WHERE walletId = :walletID AND milliseconds BETWEEN :startMilli AND :endMilli")
+    fun getWalletMovementSumFromRange(walletID: Long, startMilli: Long, endMilli: Long): Double
 }

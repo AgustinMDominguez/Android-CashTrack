@@ -8,20 +8,41 @@
     <TextView
         android:id="@+id/balance_amount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/top_guideline"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/balance_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Current Balance: $999.99" />
+        android:textAlignment="center"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textSize="35sp"
+        tools:text="$ 999.99" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/top_guideline"
+        android:id="@+id/balance_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="200dp" />
+        app:layout_constraintGuide_begin="50dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_wallets"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/wallets_movements_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/balance_guideline"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/wallets_movements_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="220dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_movements"
@@ -32,6 +53,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/top_guideline" />
+        app:layout_constraintTop_toTopOf="@+id/wallets_movements_guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@ class UIStateViewModel : ViewModel() {
         viewModelScope.launch { _addButtonPressed.value = true }
     }
 
-    fun unpressAddButton() {
+    fun releaseAddButton() {
         viewModelScope.launch { _addButtonPressed.value = false }
     }
 
@@ -33,7 +33,7 @@ class UIStateViewModel : ViewModel() {
     }
 
     companion object {
-        class Factory() :
+        class Factory :
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("unchecked_cast")

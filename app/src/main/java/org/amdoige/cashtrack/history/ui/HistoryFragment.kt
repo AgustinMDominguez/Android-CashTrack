@@ -8,19 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
 import org.amdoige.cashtrack.history.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
 import org.amdoige.cashtrack.mainscreen.UIStateViewModel
-import timber.log.Timber
 
 class HistoryFragment : Fragment() {
     private var movementsAdapter = HistoryMovementsAdapter()
@@ -63,7 +57,7 @@ class HistoryFragment : Fragment() {
         val addButtonObserver = Observer<Boolean> {
             if (it) {
                 addRandomMovement()
-                uiStateViewModel.unpressAddButton()
+                uiStateViewModel.releaseAddButton()
             }
         }
         uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)

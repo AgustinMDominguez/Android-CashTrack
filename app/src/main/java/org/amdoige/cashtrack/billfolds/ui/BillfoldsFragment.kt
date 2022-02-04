@@ -31,7 +31,9 @@ class BillfoldsFragment : Fragment() {
 
     private fun setLivedataObservers() {
         val addButtonObserver = Observer<Boolean> {
-            uiStateViewModel.unpressAddButton()
+            if (it) {
+                uiStateViewModel.unpressAddButton()
+            }
         }
         uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)
     }

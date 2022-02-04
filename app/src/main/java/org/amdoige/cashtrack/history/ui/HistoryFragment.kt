@@ -24,6 +24,7 @@ import timber.log.Timber
 
 class HistoryFragment : Fragment() {
     private var movementsAdapter = HistoryMovementsAdapter()
+    private var walletsAdapter = HistoryWalletsAdapter()
     private lateinit var viewModel: HistoryViewModel
     private lateinit var binding: FragmentHistoryBinding
     private val uiStateViewModel: UIStateViewModel by activityViewModels {
@@ -41,6 +42,7 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerMovements.adapter = movementsAdapter
+        binding.recyclerWallets.adapter = walletsAdapter
         val historyRepository = HistoryRepository(CashTrackDatabase.getInstance(requireContext()))
         viewModel = ViewModelProvider(
             this,

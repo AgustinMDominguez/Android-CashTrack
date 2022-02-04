@@ -17,7 +17,7 @@ class HistoryMovementsAdapter :
         viewType: Int
     ): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.text_movement_view, parent, false) as TextView
+        val view = layoutInflater.inflate(R.layout.single_movement_view, parent, false) as TextView
         return ViewHolder(view)
     }
 

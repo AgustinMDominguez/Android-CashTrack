@@ -54,6 +54,7 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
         val preferencesManager = SharedPreferencesManager()
         val defaultWalletId =
             withContext(Dispatchers.IO) { preferencesManager.getDefaultWalletId() }
+        Timber.i("Default Wallet Id: $defaultWalletId")
 
         return when (defaultWalletId) {
             null -> makeAWalletDefault(preferencesManager)
@@ -72,17 +73,16 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
 
     private suspend fun makeAWalletDefault(
         preferencesManager: SharedPreferencesManager = SharedPreferencesManager()
-    ): Wallet {
-        val defaultWallet = withContext(Dispatchers.IO) {
-            when (val aWallet = cashTrackDatabase.dao.getAWallet()) {
-                null -> Wallet()
-                else -> aWallet
+    ): Wallet = withContext(Dispatchers.IO) {
+        val defaultWallet = when (val aWallet = cashTrackDatabase.dao.getAWallet()) {
+            null -> {
+                val newWallet = Wallet()
+                cashTrackDatabase.dao.insert(newWallet)
+                newWallet
             }
+            else -> aWallet
         }
-        return withContext(Dispatchers.IO) {
-            cashTrackDatabase.dao.insert(defaultWallet)
-            preferencesManager.setDefaultWalletId(defaultWallet.id)
-            defaultWallet
-        }
+        preferencesManager.setDefaultWalletId(defaultWallet.id)
+        defaultWallet
     }
 }

@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history
+package org.amdoige.cashtrack.history.ui.viewmodels
 
 import androidx.lifecycle.*
 import androidx.paging.*

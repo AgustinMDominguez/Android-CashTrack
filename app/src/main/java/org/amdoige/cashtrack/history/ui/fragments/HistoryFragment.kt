@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history.ui
+package org.amdoige.cashtrack.history.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,14 +10,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.core.WalletsRepositoryProvider
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
-import org.amdoige.cashtrack.history.HistoryViewModel
+import org.amdoige.cashtrack.history.ui.viewmodels.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
+import org.amdoige.cashtrack.history.ui.adapters.HistoryMovementsAdapter
+import org.amdoige.cashtrack.history.ui.adapters.HistoryWalletsAdapter
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber
 
@@ -61,7 +62,7 @@ class HistoryFragment : Fragment() {
         }
         viewModel.movementsPagingData.observe(this, movementPagerObserver)
 
-        val walletsObserver = Observer<List<Wallet>> { walletsAdapter.wallets = it }
+        val walletsObserver = Observer<List<Wallet>> { walletsAdapter.submitList(it) }
         viewModel.wallets.observe(this, walletsObserver)
 
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }

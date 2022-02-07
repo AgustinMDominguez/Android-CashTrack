@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".history.ui.NewMovementFragment">
+    tools:context=".history.ui.fragments.NewMovementFragment">
 
     <Button
         android:id="@+id/random_movement_button"

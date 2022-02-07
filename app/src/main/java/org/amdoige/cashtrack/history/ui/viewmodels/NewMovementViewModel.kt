@@ -1,6 +1,5 @@
-package org.amdoige.cashtrack.history.ui
+package org.amdoige.cashtrack.history.ui.viewmodels
 
-import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

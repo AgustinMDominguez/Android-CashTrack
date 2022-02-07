@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history.ui
+package org.amdoige.cashtrack.history.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,30 +1,24 @@
-package org.amdoige.cashtrack.history.ui
+package org.amdoige.cashtrack.history.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Wallet
-import timber.log.Timber
 
-class HistoryWalletsAdapter : RecyclerView.Adapter<HistoryWalletsAdapter.ViewHolder>() {
-    var wallets = listOf<Wallet>()
-        set(value) {
-            field = value
-            Timber.i("Updating Wallets in adapter!")
-            notifyDataSetChanged()
-        }
+class HistoryWalletsAdapter :
+    ListAdapter<Wallet, HistoryWalletsAdapter.ViewHolder>(HistoryWalletDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = wallets[position].toString()
+        holder.textView.text = getItem(position).toString()
     }
-
-    override fun getItemCount(): Int = wallets.size
 
     class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView) {
         companion object {
@@ -36,6 +30,16 @@ class HistoryWalletsAdapter : RecyclerView.Adapter<HistoryWalletsAdapter.ViewHol
                     ) as TextView
                 return ViewHolder(view)
             }
+        }
+    }
+
+    class HistoryWalletDiffCallback : DiffUtil.ItemCallback<Wallet>() {
+        override fun areItemsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
+            return oldItem == newItem
         }
     }
 }

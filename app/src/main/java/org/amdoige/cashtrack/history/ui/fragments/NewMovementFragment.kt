@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history.ui
+package org.amdoige.cashtrack.history.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import org.amdoige.cashtrack.core.WalletsRepositoryProvider
 import org.amdoige.cashtrack.databinding.FragmentNewMovementBinding
+import org.amdoige.cashtrack.history.ui.viewmodels.NewMovementViewModel
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber
 

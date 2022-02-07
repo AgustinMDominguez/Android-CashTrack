@@ -28,18 +28,20 @@
 * Material Design
 
 ## Features
-
+@
 // TODO
 
 # To Do
 
-- [ ] Implementar fetcheo y seteo de la Default Wallet con SharedPreferences
+- [X] Implementar fetcheo y seteo de la Default Wallet con SharedPreferences
 - [ ] Implementar una visualización del item Movement en el recycler de Movements
 - [ ] Implementar una visualización del item Wallet en el recycler de Movements
 - [ ] Implementar una visualización del item Wallet en el recycler de Billfolds
 - [ ] **Implementar el fragmento de agregar una movimiento**
-- [ ] Implementar DiffUtils en el RecyclerView de Wallets
-- [ ] Hacer que el repositorio de Wallets tenga un cache
+  - [X] Implementar fragmento básico
+  - [ ] Implementar opciones customizables
+- [X] Implementar DiffUtils en el RecyclerView de Wallets
+- [X] Hacer que el repositorio de Wallets tenga un cache
 - [ ] Agregar logos posibles para las wallets
 - [ ] Completar las tecnologías usadas
 - [ ] Implementar algunos test

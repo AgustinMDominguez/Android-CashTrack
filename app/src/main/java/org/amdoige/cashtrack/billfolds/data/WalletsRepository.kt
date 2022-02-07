@@ -28,7 +28,8 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
                 'm' -> {
                     calendar.set(Calendar.DAY_OF_MONTH, 1)
                 }
-                else -> {}
+                else -> {
+                }
             }
             calendar.apply {
                 set(Calendar.HOUR_OF_DAY, 0)

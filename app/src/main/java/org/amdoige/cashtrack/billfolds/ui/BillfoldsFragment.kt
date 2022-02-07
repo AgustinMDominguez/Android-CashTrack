@@ -32,6 +32,7 @@ class BillfoldsFragment : Fragment() {
     private fun setLivedataObservers() {
         val addButtonObserver = Observer<Boolean> {
             if (it) {
+                binding.newWalletFragment.visibility = View.VISIBLE
                 sharedViewModel.releaseAddButton()
             }
         }

@@ -18,12 +18,14 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/new_wallet_fragment"
+        android:name="org.amdoige.cashtrack.billfolds.ui.NewWalletFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/bills_top_new_movement_guideline"
         app:layout_constraintBottom_toTopOf="@+id/bills_bottom_margin_guideline"
         app:layout_constraintEnd_toStartOf="@+id/bills_right_margin_guideline"
         app:layout_constraintStart_toStartOf="@+id/bills_left_margin_guideline"
+        android:elevation="15dp"
         android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -45,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="144dp" />
+        app:layout_constraintGuide_begin="85dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/bills_bottom_margin_guideline"

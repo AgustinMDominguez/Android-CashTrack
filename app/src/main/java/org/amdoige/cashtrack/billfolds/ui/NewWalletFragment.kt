@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import org.amdoige.cashtrack.R
-import org.amdoige.cashtrack.databinding.FragmentNewMovementBinding
 import org.amdoige.cashtrack.databinding.FragmentNewWalletBinding
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 

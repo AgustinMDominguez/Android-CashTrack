@@ -33,6 +33,18 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         viewModelScope.launch { _balance.value = historyRepository.getBalance() }
     }
 
+    fun newMovement(newMovement: Movement) {
+        viewModelScope.launch {
+            historyRepository.postMovement(newMovement)
+            val currentBalance = _balance.value
+            if (currentBalance == null) {
+                updateBalance()
+            } else {
+                _balance.value = currentBalance + newMovement.amount
+            }
+        }
+    }
+
     private fun newMovement(
         timestampMilli: Long,
         amount: Double,
@@ -45,15 +57,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
             title = title,
             description = description ?: ""
         )
-        viewModelScope.launch {
-            historyRepository.postMovement(newMovement)
-            val currentBalance = _balance.value
-            if (currentBalance == null) {
-                updateBalance()
-            } else {
-                _balance.value = currentBalance + newMovement.amount
-            }
-        }
+        return newMovement(newMovement)
     }
 
     fun newImmediateMovement(amount: Double, title: String, description: String? = "") {

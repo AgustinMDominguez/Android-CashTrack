@@ -33,13 +33,15 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/new_movement_fragment"
+        android:name="org.amdoige.cashtrack.history.ui.NewMovementFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
+        android:elevation="15dp"
         app:layout_constraintBottom_toTopOf="@+id/hist_bottom_margin_guideline"
         app:layout_constraintEnd_toStartOf="@+id/hist_right_margin_guideline"
         app:layout_constraintStart_toStartOf="@+id/hist_left_margin_guideline"
-        app:layout_constraintTop_toTopOf="@+id/wallets_movements_guideline"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="@+id/hist_top_new_movement_guideline" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_movements"
@@ -85,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="144dp" />
+        app:layout_constraintGuide_begin="85dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/hist_bottom_margin_guideline"

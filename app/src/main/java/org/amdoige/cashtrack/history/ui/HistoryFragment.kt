@@ -15,6 +15,7 @@ import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
 import org.amdoige.cashtrack.history.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
+import timber.log.Timber
 
 class HistoryFragment : Fragment() {
     private var movementsAdapter = HistoryMovementsAdapter()
@@ -43,6 +44,7 @@ class HistoryFragment : Fragment() {
             HistoryViewModel.Companion.Factory(historyRepository)
         )[HistoryViewModel::class.java]
         setLivedataObservers()
+        setListeners()
     }
 
     private fun setLivedataObservers() {
@@ -56,20 +58,29 @@ class HistoryFragment : Fragment() {
 
         val addButtonObserver = Observer<Boolean> {
             if (it) {
-                addRandomMovement()
+                binding.newMovementFragment.visibility = View.VISIBLE
+                Timber.i("Fragment should be visible!")
                 sharedViewModel.releaseAddButton()
             }
         }
         sharedViewModel.addButtonPressed.observe(this, addButtonObserver)
-    }
 
-    private fun addRandomMovement(forceAmount: Double? = null) {
-        val amount = forceAmount ?: run {
-            val sign = if ((0..1).random() == 0) 1.0 else -1.0
-            val units = (10..1000).random().toDouble()
-            val cents = (0..99).random().toDouble() / 100.0
-            sign * units + cents
+        val newMovementObserver = Observer<Movement?> {
+            if (it != null) {
+                Timber.i("New movement received!")
+                viewModel.newMovement(it)
+                binding.newMovementFragment.visibility = View.GONE
+                sharedViewModel.ackNewMovement()
+            }
         }
-        viewModel.newImmediateMovement(amount, "random Movement", "some description")
+        sharedViewModel.movementCreated.observe(this, newMovementObserver)
+    }
+    
+    private fun setListeners() {
+        binding.newMovementFragment.setOnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                view.visibility = View.GONE
+            }
+        }
     }
 }

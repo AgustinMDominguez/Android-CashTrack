@@ -14,15 +14,15 @@ import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
 import org.amdoige.cashtrack.history.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
-import org.amdoige.cashtrack.mainscreen.UIStateViewModel
+import org.amdoige.cashtrack.mainscreen.SharedViewModel
 
 class HistoryFragment : Fragment() {
     private var movementsAdapter = HistoryMovementsAdapter()
     private var walletsAdapter = HistoryWalletsAdapter()
     private lateinit var viewModel: HistoryViewModel
     private lateinit var binding: FragmentHistoryBinding
-    private val uiStateViewModel: UIStateViewModel by activityViewModels {
-        UIStateViewModel.Companion.Factory()
+    private val sharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModel.Companion.Factory()
     }
 
     override fun onCreateView(
@@ -57,10 +57,10 @@ class HistoryFragment : Fragment() {
         val addButtonObserver = Observer<Boolean> {
             if (it) {
                 addRandomMovement()
-                uiStateViewModel.releaseAddButton()
+                sharedViewModel.releaseAddButton()
             }
         }
-        uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)
+        sharedViewModel.addButtonPressed.observe(this, addButtonObserver)
     }
 
     private fun addRandomMovement(forceAmount: Double? = null) {

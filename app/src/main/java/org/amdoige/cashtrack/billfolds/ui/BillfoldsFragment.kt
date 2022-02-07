@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import org.amdoige.cashtrack.databinding.FragmentBillfoldsBinding
-import org.amdoige.cashtrack.mainscreen.UIStateViewModel
+import org.amdoige.cashtrack.mainscreen.SharedViewModel
 
 class BillfoldsFragment : Fragment() {
     private lateinit var binding: FragmentBillfoldsBinding
-    private val uiStateViewModel: UIStateViewModel by activityViewModels {
-        UIStateViewModel.Companion.Factory()
+    private val sharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModel.Companion.Factory()
     }
 
     override fun onCreateView(
@@ -32,9 +32,9 @@ class BillfoldsFragment : Fragment() {
     private fun setLivedataObservers() {
         val addButtonObserver = Observer<Boolean> {
             if (it) {
-                uiStateViewModel.releaseAddButton()
+                sharedViewModel.releaseAddButton()
             }
         }
-        uiStateViewModel.addButtonPressed.observe(this, addButtonObserver)
+        sharedViewModel.addButtonPressed.observe(this, addButtonObserver)
     }
 }

@@ -11,16 +11,16 @@ import org.amdoige.cashtrack.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var uiStateViewModel: UIStateViewModel
+    private lateinit var sharedViewModel: SharedViewModel
     private val bottomNavScreenMapping: Map<MainFragments, Int> get() = getScreenMapping()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        uiStateViewModel = ViewModelProvider(
+        sharedViewModel = ViewModelProvider(
             this,
-            UIStateViewModel.Companion.Factory()
-        )[UIStateViewModel::class.java]
+            SharedViewModel.Companion.Factory()
+        )[SharedViewModel::class.java]
         setContentView(binding.root)
         setUpBottomNav()
         setLivedataObservers()
@@ -31,14 +31,14 @@ class MainActivity : AppCompatActivity() {
         val screenObserver = Observer<MainFragments?> {
             bottomNavScreenMapping[it]?.let { menuItemId ->
                 binding.bottomNavigation.selectedItemId = menuItemId
-                uiStateViewModel.ackScreenSwitch()
+                sharedViewModel.ackScreenSwitch()
             }
         }
-        uiStateViewModel.currentScreen.observe(this, screenObserver)
+        sharedViewModel.currentScreen.observe(this, screenObserver)
     }
 
     private fun setListeners() {
-        binding.addButton.setOnClickListener { uiStateViewModel.pressAddButton() }
+        binding.addButton.setOnClickListener { sharedViewModel.pressAddButton() }
     }
 
     private fun setUpBottomNav() {

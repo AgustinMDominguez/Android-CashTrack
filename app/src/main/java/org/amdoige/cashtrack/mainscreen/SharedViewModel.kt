@@ -3,7 +3,7 @@ package org.amdoige.cashtrack.mainscreen
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
-class UIStateViewModel : ViewModel() {
+class SharedViewModel : ViewModel() {
     private val _currentScreen: MutableLiveData<MainFragments?> = MutableLiveData(null)
     val currentScreen: LiveData<MainFragments?>
         get() = _currentScreen
@@ -37,8 +37,8 @@ class UIStateViewModel : ViewModel() {
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("unchecked_cast")
-                if (modelClass.isAssignableFrom(UIStateViewModel::class.java)) {
-                    return UIStateViewModel() as T
+                if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
+                    return SharedViewModel() as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

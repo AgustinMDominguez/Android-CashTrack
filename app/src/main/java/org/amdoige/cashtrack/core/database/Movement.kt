@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 data class Movement(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L,
+    var walletId: Long,
     var amount: Double = 0.0,
     var milliseconds: Long = System.currentTimeMillis(),
     var title: String = "",
     var description: String = "",
-    var walletId: Long? = null
 ) {
     companion object {
         object Comparator : DiffUtil.ItemCallback<Movement>() {

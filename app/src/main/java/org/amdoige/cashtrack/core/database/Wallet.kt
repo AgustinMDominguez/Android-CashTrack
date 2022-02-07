@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import org.amdoige.cashtrack.R
+import org.amdoige.cashtrack.core.CashTrackApplication
 
 @Entity(tableName = "wallet_table")
 data class Wallet(
@@ -14,8 +15,8 @@ data class Wallet(
     var name: String = "Wallet",
     var limit: Double = -1.0,
     var limitPeriod: Char = 'm',
-    var logo: String = Resources.getSystem().getString(R.string.default_wallet_logo),
-    var color: Int = Resources.getSystem().getColor(R.color.default_wallet_color, null),
+    var logo: String = CashTrackApplication.applicationContext.getString(R.string.default_wallet_logo),
+    var color: Int = CashTrackApplication.applicationContext.getColor(R.color.default_wallet_color),
     @Ignore
     var balance: Double? = null
 ) {

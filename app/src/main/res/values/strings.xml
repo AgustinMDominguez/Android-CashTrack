@@ -1,4 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="application_shared_preferences_file_key">org.amdoige.cashtrack.SHARED_PREFERENCES_FILE</string>
+    <string name="pref_default_wallet_id_key">DEFAULT_WALLET_ID</string>
+
     <string name="app_name">CashTrack</string>
     <string name="default_wallet_logo" tools:ignore="ReferenceType">@drawable/ic_cashtrack_wallet_1</string>
     <string name="home_ic_title">Home</string>

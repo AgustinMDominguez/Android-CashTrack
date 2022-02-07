@@ -17,6 +17,9 @@ interface WalletDao {
     @Query("SELECT * FROM wallet_table WHERE id = :key")
     fun getWallet(key: Long): Wallet?
 
+    @Query("SELECT * FROM wallet_table LIMIT 1")
+    fun getAWallet(): Wallet?
+
     @Delete
     fun delete(wallet: Wallet)
 

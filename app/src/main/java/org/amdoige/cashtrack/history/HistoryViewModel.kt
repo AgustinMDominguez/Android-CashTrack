@@ -2,12 +2,20 @@ package org.amdoige.cashtrack.history
 
 import androidx.lifecycle.*
 import androidx.paging.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.core.database.Wallet
 import org.amdoige.cashtrack.history.data.HistoryRepository
 import java.text.DecimalFormat
 
-class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
+class HistoryViewModel(
+    private val historyRepository: HistoryRepository,
+    private val walletsRepository: WalletsRepository
+) : ViewModel() {
     private val modelPageSize = 30
 
     val movementsPagingData = Pager(
@@ -25,8 +33,27 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
         "$sign $ $roundedAmount"
     }
 
+    private val _wallets: MutableLiveData<List<Wallet>> = MutableLiveData(listOf())
+
+    val wallets: LiveData<List<Wallet>>
+        get() = _wallets
+
     init {
+        updateWalletsFromDatabase()
         updateBalance()
+    }
+
+    private fun updateWalletsFromDatabase() {
+        viewModelScope.launch {
+            val wallets = walletsRepository.getAllWallets()
+            // TODO: Move this implementation to Repository Cache
+            val asyncJobs = mutableListOf<Deferred<Unit>>()
+            wallets.forEach {
+                asyncJobs.add(async { it.balance = walletsRepository.getWalletBalance(it) })
+            }
+            asyncJobs.awaitAll()
+            _wallets.postValue(wallets)
+        }
     }
 
     private fun updateBalance() {
@@ -73,12 +100,14 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
     }
 
     companion object {
-        class Factory(private val historyRepository: HistoryRepository) :
-            ViewModelProvider.Factory {
+        class Factory(
+            private val historyRepository: HistoryRepository,
+            private val walletsRepository: WalletsRepository
+        ) : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("unchecked_cast")
                 if (modelClass.isAssignableFrom(HistoryViewModel::class.java)) {
-                    return HistoryViewModel(historyRepository) as T
+                    return HistoryViewModel(historyRepository, walletsRepository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

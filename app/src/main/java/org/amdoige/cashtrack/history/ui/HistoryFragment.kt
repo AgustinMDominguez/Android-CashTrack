@@ -9,8 +9,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import org.amdoige.cashtrack.core.WalletsRepositoryProvider
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.core.database.Wallet
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
 import org.amdoige.cashtrack.history.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
@@ -20,8 +24,9 @@ import timber.log.Timber
 class HistoryFragment : Fragment() {
     private var movementsAdapter = HistoryMovementsAdapter()
     private var walletsAdapter = HistoryWalletsAdapter()
-    private lateinit var viewModel: HistoryViewModel
     private lateinit var binding: FragmentHistoryBinding
+    private lateinit var viewModel: HistoryViewModel
+
     private val sharedViewModel: SharedViewModel by activityViewModels {
         SharedViewModel.Companion.Factory()
     }
@@ -37,11 +42,15 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerMovements.adapter = movementsAdapter
+        binding.recyclerWallets.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, true)
         binding.recyclerWallets.adapter = walletsAdapter
+
         val historyRepository = HistoryRepository(CashTrackDatabase.getInstance(requireContext()))
+        val walletRepository = WalletsRepositoryProvider.getRepository(requireContext())
         viewModel = ViewModelProvider(
             this,
-            HistoryViewModel.Companion.Factory(historyRepository)
+            HistoryViewModel.Companion.Factory(historyRepository, walletRepository)
         )[HistoryViewModel::class.java]
         setLivedataObservers()
     }
@@ -52,13 +61,15 @@ class HistoryFragment : Fragment() {
         }
         viewModel.movementsPagingData.observe(this, movementPagerObserver)
 
+        val walletsObserver = Observer<List<Wallet>> { walletsAdapter.wallets = it }
+        viewModel.wallets.observe(this, walletsObserver)
+
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
         viewModel.balanceString.observe(this, balanceObserver)
 
         val addButtonObserver = Observer<Boolean> {
             if (it) {
                 binding.newMovementFragment.visibility = View.VISIBLE
-                Timber.i("Fragment should be visible!")
                 sharedViewModel.releaseAddButton()
             }
         }

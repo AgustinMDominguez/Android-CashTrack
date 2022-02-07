@@ -6,9 +6,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Wallet
+import timber.log.Timber
 
 class HistoryWalletsAdapter : RecyclerView.Adapter<HistoryWalletsAdapter.ViewHolder>() {
     var wallets = listOf<Wallet>()
+        set(value) {
+            field = value
+            Timber.i("Updating Wallets in adapter!")
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)

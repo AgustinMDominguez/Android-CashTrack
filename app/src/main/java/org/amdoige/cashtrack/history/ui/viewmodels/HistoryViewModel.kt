@@ -44,16 +44,7 @@ class HistoryViewModel(
     }
 
     private fun updateWalletsFromDatabase() {
-        viewModelScope.launch {
-            val wallets = walletsRepository.getAllWallets()
-            // TODO: Move this implementation to Repository Cache
-            val asyncJobs = mutableListOf<Deferred<Unit>>()
-            wallets.forEach {
-                asyncJobs.add(async { it.balance = walletsRepository.getWalletBalance(it) })
-            }
-            asyncJobs.awaitAll()
-            _wallets.postValue(wallets)
-        }
+        viewModelScope.launch { _wallets.postValue(walletsRepository.getAllWalletsWithBalance()) }
     }
 
     private fun updateBalance() {

@@ -1,7 +1,6 @@
 package org.amdoige.cashtrack.billfolds.data
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.amdoige.cashtrack.core.SharedPreferencesManager
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Wallet
@@ -10,9 +9,54 @@ import java.util.*
 import kotlin.math.min
 
 class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
-    // TODO: Implement Wallet Cache
+    private var walletsListCache: List<Wallet>? = null
+    private var walletsMapCache: MutableMap<Long, Wallet> = mutableMapOf()
+
     suspend fun getAllWallets(): List<Wallet> = withContext(Dispatchers.IO) {
-        cashTrackDatabase.dao.getWallets()
+        var myWallets = walletsListCache
+        if (myWallets.isNullOrEmpty()) {
+            myWallets = cashTrackDatabase.dao.getWallets()
+            walletsListCache = myWallets
+            myWallets.forEach { walletsMapCache[it.id] = it }
+        }
+        myWallets
+    }
+
+    fun invalidateWalletCache() {
+        walletsListCache = null
+        walletsMapCache = mutableMapOf()
+    }
+
+    suspend fun getAllWalletsWithBalance(): List<Wallet> = withContext(Dispatchers.IO) {
+        var myWallets = walletsListCache
+        if (myWallets.isNullOrEmpty() || myWallets[0].balance == null) {
+            myWallets = getAllWallets()
+            val asyncJobs = mutableListOf<Deferred<Unit>>()
+            myWallets.forEach {
+                asyncJobs.add(async {
+                    it.balance = getWalletBalance(it)
+                    walletsMapCache[it.id] = it
+                })
+            }
+            asyncJobs.awaitAll()
+            walletsListCache = myWallets
+        }
+        myWallets
+    }
+
+    suspend fun getWalletById(walletId: Long): Wallet? {
+        val cachedWallet = walletsMapCache[walletId]
+        return if (cachedWallet == null) {
+            val fetchedWallet = withContext(Dispatchers.IO) {
+                cashTrackDatabase.dao.getWallet(walletId)
+            }
+            if (fetchedWallet != null) {
+                walletsMapCache[walletId] = fetchedWallet
+            }
+            fetchedWallet
+        } else {
+            cachedWallet
+        }
     }
 
     suspend fun getWalletBalance(wallet: Wallet, currentFundBalance: Double? = null): Double {

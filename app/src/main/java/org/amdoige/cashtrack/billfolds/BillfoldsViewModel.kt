@@ -21,16 +21,7 @@ class BillfoldsViewModel(private val walletsRepository: WalletsRepository) : Vie
     }
 
     private fun updateWalletsFromDatabase() {
-        viewModelScope.launch {
-            val wallets = walletsRepository.getAllWallets()
-            // TODO: Move this implementation to Repository Cache
-            val asyncJobs = mutableListOf<Deferred<Unit>>()
-            wallets.forEach {
-                asyncJobs.add(async { it.balance = walletsRepository.getWalletBalance(it) })
-            }
-            asyncJobs.awaitAll()
-            _wallets.postValue(wallets)
-        }
+        viewModelScope.launch { _wallets.postValue(walletsRepository.getAllWalletsWithBalance()) }
     }
 
     companion object {

@@ -44,7 +44,6 @@ class HistoryFragment : Fragment() {
             HistoryViewModel.Companion.Factory(historyRepository)
         )[HistoryViewModel::class.java]
         setLivedataObservers()
-        setListeners()
     }
 
     private fun setLivedataObservers() {
@@ -74,13 +73,5 @@ class HistoryFragment : Fragment() {
             }
         }
         sharedViewModel.movementCreated.observe(this, newMovementObserver)
-    }
-    
-    private fun setListeners() {
-        binding.newMovementFragment.setOnFocusChangeListener { view, hasFocus ->
-            if (!hasFocus) {
-                view.visibility = View.GONE
-            }
-        }
     }
 }

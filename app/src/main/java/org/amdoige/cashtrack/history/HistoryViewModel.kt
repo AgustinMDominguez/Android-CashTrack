@@ -72,26 +72,6 @@ class HistoryViewModel(
         }
     }
 
-    private fun newMovement(
-        timestampMilli: Long,
-        amount: Double,
-        title: String,
-        description: String? = null,
-    ) {
-        val newMovement = Movement(
-            milliseconds = timestampMilli,
-            amount = amount,
-            title = title,
-            description = description ?: ""
-        )
-        return newMovement(newMovement)
-    }
-
-    fun newImmediateMovement(amount: Double, title: String, description: String? = "") {
-        val timestampMilli = System.currentTimeMillis()
-        newMovement(timestampMilli, amount, title, description)
-    }
-
     fun deleteAllMovements() {
         viewModelScope.launch {
             historyRepository.deleteAllMovements()

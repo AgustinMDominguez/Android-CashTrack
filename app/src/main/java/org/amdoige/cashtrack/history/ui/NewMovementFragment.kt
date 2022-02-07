@@ -6,13 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import org.amdoige.cashtrack.core.database.Movement
+import androidx.lifecycle.ViewModelProvider
+import org.amdoige.cashtrack.core.WalletsRepositoryProvider
 import org.amdoige.cashtrack.databinding.FragmentNewMovementBinding
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber
 
 class NewMovementFragment : Fragment() {
     private lateinit var binding: FragmentNewMovementBinding
+    private lateinit var viewModel: NewMovementViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels {
         SharedViewModel.Companion.Factory()
     }
@@ -27,6 +29,11 @@ class NewMovementFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val walletsRepository = WalletsRepositoryProvider.getRepository(requireContext())
+        viewModel = ViewModelProvider(
+            this,
+            NewMovementViewModel.Companion.Factory(walletsRepository)
+        )[NewMovementViewModel::class.java]
         setListeners()
     }
 
@@ -41,13 +48,12 @@ class NewMovementFragment : Fragment() {
             val cents = (0..99).random().toDouble() / 100.0
             sign * units + cents
         }
-        val newMovement = Movement(
-            amount = amount,
-            milliseconds = System.currentTimeMillis(),
-            title = "Random Movement",
-            description = "Some description"
-        )
-        sharedViewModel.newMovement(newMovement)
-        Timber.i("New movement added!")
+        viewModel.amount.value = amount
+        val newMovement = viewModel.getCreatedMovement()
+        if (newMovement != null) {
+            sharedViewModel.newMovement(newMovement)
+        } else {
+            Timber.e("Could not create newMovement!")
+        }
     }
 }

@@ -2,8 +2,18 @@ package org.amdoige.cashtrack.mainscreen
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.core.database.Wallet
 
 class SharedViewModel : ViewModel() {
+    private val _walletCreated: MutableLiveData<Wallet?> = MutableLiveData(null)
+    val walletCreated: LiveData<Wallet?>
+        get() = _walletCreated
+
+    private val _movementCreated: MutableLiveData<Movement?> = MutableLiveData(null)
+    val movementCreated: LiveData<Movement?>
+        get() = _movementCreated
+
     private val _currentScreen: MutableLiveData<MainFragments?> = MutableLiveData(null)
     val currentScreen: LiveData<MainFragments?>
         get() = _currentScreen
@@ -30,6 +40,22 @@ class SharedViewModel : ViewModel() {
 
     fun ackScreenSwitch() {
         viewModelScope.launch { _currentScreen.postValue(null) }
+    }
+
+    fun newMovement(movement: Movement) {
+        viewModelScope.launch { _movementCreated.postValue(movement) }
+    }
+
+    fun ackNewMovement() {
+        viewModelScope.launch { _movementCreated.value = null }
+    }
+
+    fun newWallet(wallet: Wallet) {
+        viewModelScope.launch { _walletCreated.postValue(wallet) }
+    }
+
+    fun ackNewWallet() {
+        viewModelScope.launch { _walletCreated.value = null }
     }
 
     companion object {

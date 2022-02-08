@@ -1,11 +1,13 @@
 package org.amdoige.cashtrack.history.ui.movements.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.databinding.SingleMovementViewBinding
+import java.text.DecimalFormat
 
 
 class HistoryMovementsAdapter :
@@ -35,7 +37,15 @@ class HistoryMovementsAdapter :
     class ViewHolder(private val itemBinding: SingleMovementViewBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(movement: Movement) {
-            itemBinding.movementTestTextView.text = movement.toString()
+            itemBinding.transactionTitle.text = movement.title
+            itemBinding.transactionAmount.text = movement.getAmountString()
+            // TODO: Set logo
+            if (movement.description.isNotEmpty()) {
+                itemBinding.transactionDescription.visibility = View.VISIBLE
+                itemBinding.transactionDescription.text = movement.description
+            } else {
+                itemBinding.transactionDescription.visibility = View.GONE
+            }
         }
 
         fun bindPlaceholder() {}

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.text.DecimalFormat
 
 @Entity(tableName = "movements_table")
 data class Movement(
@@ -20,6 +21,8 @@ data class Movement(
 
     @Ignore
     var logo: String? = null
+
+    fun getAmountString(): String = "$ ${DecimalFormat("#.00").format(amount)}"
 
     companion object {
         object Comparator : DiffUtil.ItemCallback<Movement>() {

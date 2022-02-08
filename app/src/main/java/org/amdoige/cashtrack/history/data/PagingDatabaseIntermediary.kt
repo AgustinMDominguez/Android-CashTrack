@@ -5,12 +5,20 @@ import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import timber.log.Timber
+import kotlin.reflect.KSuspendFunction1
 
-class PagingDatabaseIntermediary(private val cashTrackDatabase: CashTrackDatabase) {
+class PagingDatabaseIntermediary(
+    private val cashTrackDatabase: CashTrackDatabase,
+    private val loaderMap: KSuspendFunction1<List<Movement>, List<Movement>>
+) {
     private var pageMap: MutableMap<Int, Long> = mutableMapOf() // page -> movement timestamp
     private var currentPageSize: Int? = null
 
     suspend fun pageLoader(page: Int, pageSize: Int): List<Movement> {
+        return loaderMap(loadPage(page, pageSize))
+    }
+
+    private suspend fun loadPage(page: Int, pageSize: Int): List<Movement> {
         when {
             currentPageSize == null || currentPageSize == 3 * pageSize -> {
                 currentPageSize = pageSize

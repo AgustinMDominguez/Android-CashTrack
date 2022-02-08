@@ -3,6 +3,7 @@ package org.amdoige.cashtrack.billfolds.data
 import kotlinx.coroutines.*
 import org.amdoige.cashtrack.core.SharedPreferencesManager
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
+import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import timber.log.Timber
 import java.util.*
@@ -55,6 +56,7 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
             }
             fetchedWallet
         } else {
+            Timber.i("Wallet cached!")
             cachedWallet
         }
     }
@@ -107,6 +109,23 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
                     preferencesManager
                 )
             }
+        }
+    }
+
+    suspend fun addWalletInfoToMovements(movements: List<Movement>): List<Movement> {
+        return withContext(Dispatchers.IO) {
+            val asyncJobs = mutableListOf<Deferred<Unit>>()
+            movements.forEach { movement ->
+                val deferred: Deferred<Unit> = async {
+                    getWalletById(movement.walletId)?.let { wallet ->
+                        movement.color = wallet.color
+                        movement.logo = wallet.logo
+                    }
+                }
+                asyncJobs.add(deferred)
+            }
+            asyncJobs.awaitAll()
+            movements
         }
     }
 

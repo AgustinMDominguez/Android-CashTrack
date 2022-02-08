@@ -7,8 +7,10 @@ import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import timber.log.Timber
 
-class HistoryRepository(private val cashTrackDatabase: CashTrackDatabase) {
-    private val pagingIntermediary = PagingDatabaseIntermediary(cashTrackDatabase)
+class HistoryRepository(
+    private val cashTrackDatabase: CashTrackDatabase,
+    private val pagingIntermediary: PagingDatabaseIntermediary
+) {
     private var pagingSource = HistoryPagingSource(pagingIntermediary::pageLoader)
 
     fun getValidPagingSource(): PagingSource<Int, Movement> {

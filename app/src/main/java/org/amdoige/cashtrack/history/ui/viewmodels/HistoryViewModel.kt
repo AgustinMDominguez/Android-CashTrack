@@ -20,9 +20,8 @@ class HistoryViewModel(
 
     val movementsPagingData = Pager(
         PagingConfig(pageSize = modelPageSize),
-        null,
-        { historyRepository.getValidPagingSource() }
-    )
+        null
+    ) { historyRepository.getValidPagingSource() }
         .liveData
         .cachedIn(viewModelScope)
 
@@ -60,13 +59,6 @@ class HistoryViewModel(
             } else {
                 _balance.value = currentBalance + newMovement.amount
             }
-        }
-    }
-
-    fun deleteAllMovements() {
-        viewModelScope.launch {
-            historyRepository.deleteAllMovements()
-            updateBalance()
         }
     }
 

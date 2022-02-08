@@ -45,6 +45,6 @@ class BillfoldsFragment : Fragment() {
                 sharedViewModel.releaseAddButton()
             }
         }
-        sharedViewModel.addButtonPressed.observe(this, addButtonObserver)
+        sharedViewModel.addButtonPressed.observe(viewLifecycleOwner, addButtonObserver)
     }
 }

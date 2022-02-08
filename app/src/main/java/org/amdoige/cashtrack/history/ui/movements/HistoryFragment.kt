@@ -16,14 +16,15 @@ import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
 import org.amdoige.cashtrack.history.data.HistoryRepository
+import org.amdoige.cashtrack.history.data.PagingDatabaseIntermediary
 import org.amdoige.cashtrack.history.ui.movements.adapters.HistoryMovementsAdapter
 import org.amdoige.cashtrack.history.ui.movements.adapters.HistoryWalletsAdapter
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber
 
 class HistoryFragment : Fragment() {
-    private var movementsAdapter = HistoryMovementsAdapter()
-    private var walletsAdapter = HistoryWalletsAdapter()
+    private val movementsAdapter = HistoryMovementsAdapter()
+    private val walletsAdapter = HistoryWalletsAdapter()
     private lateinit var binding: FragmentHistoryBinding
     private lateinit var viewModel: HistoryViewModel
 
@@ -46,8 +47,12 @@ class HistoryFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, true)
         binding.recyclerWallets.adapter = walletsAdapter
 
-        val historyRepository = HistoryRepository(CashTrackDatabase.getInstance(requireContext()))
+        val cashTrackDatabase = CashTrackDatabase.getInstance(requireContext())
         val walletRepository = WalletsRepositoryProvider.getRepository(requireContext())
+        val pagingDatabaseIntermediary = PagingDatabaseIntermediary(
+            cashTrackDatabase, walletRepository::addWalletInfoToMovements
+        )
+        val historyRepository = HistoryRepository(cashTrackDatabase, pagingDatabaseIntermediary)
         viewModel = ViewModelProvider(
             this,
             HistoryViewModel.Companion.Factory(historyRepository, walletRepository)
@@ -59,13 +64,13 @@ class HistoryFragment : Fragment() {
         val movementPagerObserver = Observer<PagingData<Movement>> { pagingData ->
             movementsAdapter.submitData(lifecycle, pagingData)
         }
-        viewModel.movementsPagingData.observe(this, movementPagerObserver)
+        viewModel.movementsPagingData.observe(viewLifecycleOwner, movementPagerObserver)
 
         val walletsObserver = Observer<List<Wallet>> { walletsAdapter.submitList(it) }
-        viewModel.wallets.observe(this, walletsObserver)
+        viewModel.wallets.observe(viewLifecycleOwner, walletsObserver)
 
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
-        viewModel.balanceString.observe(this, balanceObserver)
+        viewModel.balanceString.observe(viewLifecycleOwner, balanceObserver)
 
         val addButtonObserver = Observer<Boolean> {
             if (it) {
@@ -73,7 +78,7 @@ class HistoryFragment : Fragment() {
                 sharedViewModel.releaseAddButton()
             }
         }
-        sharedViewModel.addButtonPressed.observe(this, addButtonObserver)
+        sharedViewModel.addButtonPressed.observe(viewLifecycleOwner, addButtonObserver)
 
         val newMovementObserver = Observer<Movement?> {
             if (it != null) {
@@ -83,6 +88,6 @@ class HistoryFragment : Fragment() {
                 sharedViewModel.ackNewMovement()
             }
         }
-        sharedViewModel.movementCreated.observe(this, newMovementObserver)
+        sharedViewModel.movementCreated.observe(viewLifecycleOwner, newMovementObserver)
     }
 }

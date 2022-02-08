@@ -40,8 +40,6 @@ class HistoryMovementsAdapter :
             itemBinding.movementTestTextView.text = movement.toString()
         }
 
-        fun bindPlaceholder() {
-            itemBinding.movementTestTextView.text = "placeholder"
-        }
+        fun bindPlaceholder() {}
     }
 }

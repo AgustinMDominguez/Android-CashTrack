@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history.ui.fragments
+package org.amdoige.cashtrack.history.ui.movements
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,10 +15,9 @@ import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import org.amdoige.cashtrack.databinding.FragmentHistoryBinding
-import org.amdoige.cashtrack.history.ui.viewmodels.HistoryViewModel
 import org.amdoige.cashtrack.history.data.HistoryRepository
-import org.amdoige.cashtrack.history.ui.adapters.HistoryMovementsAdapter
-import org.amdoige.cashtrack.history.ui.adapters.HistoryWalletsAdapter
+import org.amdoige.cashtrack.history.ui.movements.adapters.HistoryMovementsAdapter
+import org.amdoige.cashtrack.history.ui.movements.adapters.HistoryWalletsAdapter
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber
 

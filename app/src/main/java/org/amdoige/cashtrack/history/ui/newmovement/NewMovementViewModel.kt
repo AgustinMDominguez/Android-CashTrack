@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.history.ui.viewmodels
+package org.amdoige.cashtrack.history.ui.newmovement
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

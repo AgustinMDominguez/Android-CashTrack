@@ -1,10 +1,7 @@
-package org.amdoige.cashtrack.history.ui.viewmodels
+package org.amdoige.cashtrack.history.ui.movements
 
 import androidx.lifecycle.*
 import androidx.paging.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import org.amdoige.cashtrack.core.database.Movement

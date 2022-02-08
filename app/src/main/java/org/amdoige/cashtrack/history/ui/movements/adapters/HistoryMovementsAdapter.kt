@@ -1,11 +1,9 @@
-package org.amdoige.cashtrack.history.ui.adapters
+package org.amdoige.cashtrack.history.ui.movements.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.databinding.SingleMovementViewBinding
 

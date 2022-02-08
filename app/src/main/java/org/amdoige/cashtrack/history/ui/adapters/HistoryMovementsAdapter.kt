@@ -7,6 +7,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.databinding.SingleMovementViewBinding
 
 
 class HistoryMovementsAdapter :
@@ -16,27 +17,31 @@ class HistoryMovementsAdapter :
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.single_movement_view, parent, false) as TextView
-        return ViewHolder(view)
+        val itemBinding = SingleMovementViewBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            bind(item, holder)
+            holder.bind(item)
         } else {
-            bindPlaceholder(holder)
+            holder.bindPlaceholder()
         }
     }
 
-    private fun bind(movement: Movement, holder: ViewHolder) {
-        holder.textView.text = movement.toString()
-    }
+    class ViewHolder(private val itemBinding: SingleMovementViewBinding) :
+        RecyclerView.ViewHolder(itemBinding.root) {
+        fun bind(movement: Movement) {
+            itemBinding.movementTestTextView.text = movement.toString()
+        }
 
-    private fun bindPlaceholder(holder: ViewHolder) {
-        holder.textView.text = "placeholder"
+        fun bindPlaceholder() {
+            itemBinding.movementTestTextView.text = "placeholder"
+        }
     }
-
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 }

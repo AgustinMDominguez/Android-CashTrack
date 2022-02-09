@@ -1,14 +1,9 @@
 package org.amdoige.cashtrack.billfolds
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
-import org.amdoige.cashtrack.core.WalletsRepositoryProvider
 import org.amdoige.cashtrack.core.database.Wallet
-import org.amdoige.cashtrack.mainscreen.SharedViewModel
 
 class BillfoldsViewModel(private val walletsRepository: WalletsRepository) : ViewModel() {
     private val _wallets: MutableLiveData<List<Wallet>> = MutableLiveData(listOf())

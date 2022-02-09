@@ -1,7 +1,8 @@
-package org.amdoige.cashtrack.core
+package org.amdoige.cashtrack.core.classes
 
 import android.content.Context
 import org.amdoige.cashtrack.R
+import org.amdoige.cashtrack.core.CashTrackApplication
 
 class SharedPreferencesManager {
     private val context = CashTrackApplication.applicationContext

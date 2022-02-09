@@ -1,4 +1,4 @@
-package org.amdoige.cashtrack.core
+package org.amdoige.cashtrack.core.classes
 
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import android.content.Context

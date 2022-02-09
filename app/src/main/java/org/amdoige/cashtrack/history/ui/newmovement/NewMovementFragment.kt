@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import org.amdoige.cashtrack.core.WalletsRepositoryProvider
+import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
 import org.amdoige.cashtrack.databinding.FragmentNewMovementBinding
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 import timber.log.Timber

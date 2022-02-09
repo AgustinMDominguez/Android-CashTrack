@@ -1,7 +1,7 @@
 package org.amdoige.cashtrack.billfolds.data
 
 import kotlinx.coroutines.*
-import org.amdoige.cashtrack.core.SharedPreferencesManager
+import org.amdoige.cashtrack.core.classes.SharedPreferencesManager
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet

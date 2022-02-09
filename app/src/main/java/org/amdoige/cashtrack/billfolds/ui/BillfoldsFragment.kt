@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.amdoige.cashtrack.billfolds.BillfoldsViewModel
-import org.amdoige.cashtrack.core.WalletsRepositoryProvider
+import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
 import org.amdoige.cashtrack.databinding.FragmentBillfoldsBinding
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
 

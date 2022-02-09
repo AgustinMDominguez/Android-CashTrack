@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.amdoige.cashtrack.core.WalletsRepositoryProvider
+import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
 import org.amdoige.cashtrack.core.database.CashTrackDatabase
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet

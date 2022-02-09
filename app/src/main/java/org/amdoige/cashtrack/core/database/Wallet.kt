@@ -7,6 +7,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.CashTrackApplication
+import java.text.DecimalFormat
 
 @Entity(tableName = "wallet_table")
 data class Wallet(
@@ -20,6 +21,9 @@ data class Wallet(
     @Ignore
     var balance: Double? = null
 ) {
+
+    fun getBalanceString(): String = "$ ${DecimalFormat("#.00").format(balance ?: 0.0)}"
+
     companion object {
         object Comparator : DiffUtil.ItemCallback<Wallet>() {
             override fun areItemsTheSame(p0: Wallet, p1: Wallet): Boolean = p0.id == p1.id

@@ -20,7 +20,7 @@ data class Movement(
     var color: Int? = null
 
     @Ignore
-    var logo: String? = null
+    var logo: Int? = null
 
     fun getAmountString(): String = "$ ${DecimalFormat("#.00").format(amount)}"
 

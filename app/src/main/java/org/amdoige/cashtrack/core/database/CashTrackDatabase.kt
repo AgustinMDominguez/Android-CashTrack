@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Movement::class, Wallet::class], version = 8, exportSchema = false)
+@Database(entities = [Movement::class, Wallet::class], version = 9, exportSchema = false)
 abstract class CashTrackDatabase : RoomDatabase() {
     abstract val dao: CashTrackDatabaseDao
 

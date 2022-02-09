@@ -15,8 +15,8 @@ data class Wallet(
     var name: String = "Wallet",
     var limit: Double = -1.0,
     var limitPeriod: Char = 'm',
-    var logo: String = CashTrackApplication.applicationContext.getString(R.string.default_wallet_logo),
-    var color: Int = CashTrackApplication.applicationContext.getColor(R.color.default_wallet_color),
+    var logo: Int = R.drawable.ic_cashtrack_wallet_1,
+    var color: Int = R.color.default_wallet_color,
     @Ignore
     var balance: Double? = null
 ) {

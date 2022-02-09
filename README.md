@@ -9,6 +9,7 @@
   - [Features](#features)
 - [To Do](#to-do)
 - [Info](#info)
+  - [Known Bugs](#known-bugs)
   - [About](#about)
     - [Developers](#developers)
 
@@ -34,7 +35,7 @@
 # To Do
 
 - [X] Implementar fetcheo y seteo de la Default Wallet con SharedPreferences
-- [ ] Implementar una visualización del item Movement en el recycler de Movements
+- [X] Implementar una visualización del item Movement en el recycler de Movements
 - [ ] Implementar una visualización del item Wallet en el recycler de Movements
 - [ ] Implementar una visualización del item Wallet en el recycler de Billfolds
 - [ ] **Implementar el fragmento de agregar una movimiento**
@@ -55,6 +56,10 @@ Opcionales
 
 
 # Info
+
+## Known Bugs
+
+ * The first time that the app is started, the default wallet is created but doesn't show up until you recreate the fragment
 
 ## About
 

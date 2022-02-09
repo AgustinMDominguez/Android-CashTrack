@@ -36,7 +36,7 @@
 
 - [X] Implementar fetcheo y seteo de la Default Wallet con SharedPreferences
 - [X] Implementar una visualización del item Movement en el recycler de Movements
-- [ ] Implementar una visualización del item Wallet en el recycler de Movements
+- [X] Implementar una visualización del item Wallet en el recycler de Movements
 - [ ] Implementar una visualización del item Wallet en el recycler de Billfolds
 - [ ] **Implementar el fragmento de agregar una movimiento**
   - [X] Implementar fragmento básico
@@ -47,6 +47,7 @@
 - [ ] Completar las tecnologías usadas
 - [ ] Implementar algunos test
 - [ ] Linkear las librerías usadas en el README.md
+- [ ] Implementar que cuando se agregue un nuevo movimiento se scrolle automáticamente hacia el lugar de la timeline donde se encuentra
 
 Opcionales
 

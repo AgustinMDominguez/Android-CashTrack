@@ -51,7 +51,7 @@ class NewMovementFragment : Fragment() {
         viewModel.amount.value = amount
         val newMovement = viewModel.getCreatedMovement()
         if (newMovement != null) {
-            sharedViewModel.newMovement(newMovement)
+            sharedViewModel.movementCreationEvent.emit(newMovement)
         } else {
             Timber.e("Could not create newMovement!")
         }

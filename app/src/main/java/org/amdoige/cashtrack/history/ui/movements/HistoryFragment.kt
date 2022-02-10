@@ -72,22 +72,14 @@ class HistoryFragment : Fragment() {
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
         viewModel.balanceString.observe(viewLifecycleOwner, balanceObserver)
 
-        val addButtonObserver = Observer<Boolean> {
-            if (it) {
-                binding.newMovementFragment.visibility = View.VISIBLE
-                sharedViewModel.releaseAddButton()
-            }
+        sharedViewModel.addEvent.observePulse(viewLifecycleOwner) {
+            binding.newMovementFragment.visibility = View.VISIBLE
         }
-        sharedViewModel.addButtonPressed.observe(viewLifecycleOwner, addButtonObserver)
 
-        val newMovementObserver = Observer<Movement?> {
-            if (it != null) {
-                Timber.i("New movement received!")
-                viewModel.newMovement(it)
-                binding.newMovementFragment.visibility = View.GONE
-                sharedViewModel.ackNewMovement()
-            }
+        sharedViewModel.movementCreationEvent.observe(viewLifecycleOwner) {
+            viewModel.newMovement(it)
+            binding.newMovementFragment.visibility = View.GONE
+            Timber.i("New Movement added: $it")
         }
-        sharedViewModel.movementCreated.observe(viewLifecycleOwner, newMovementObserver)
     }
 }

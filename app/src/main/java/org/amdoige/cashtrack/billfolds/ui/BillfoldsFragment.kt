@@ -39,12 +39,8 @@ class BillfoldsFragment : Fragment() {
     }
 
     private fun setLivedataObservers() {
-        val addButtonObserver = Observer<Boolean> {
-            if (it) {
-                binding.newWalletFragment.visibility = View.VISIBLE
-                sharedViewModel.releaseAddButton()
-            }
+        sharedViewModel.addEvent.observePulse(viewLifecycleOwner) {
+            binding.newWalletFragment.visibility = View.VISIBLE
         }
-        sharedViewModel.addButtonPressed.observe(viewLifecycleOwner, addButtonObserver)
     }
 }

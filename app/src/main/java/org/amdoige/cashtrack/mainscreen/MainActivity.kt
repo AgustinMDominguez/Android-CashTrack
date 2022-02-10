@@ -28,17 +28,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLivedataObservers() {
-        val screenObserver = Observer<MainFragments?> {
+        sharedViewModel.switchScreenEvent.observe(this) {
             bottomNavScreenMapping[it]?.let { menuItemId ->
                 binding.bottomNavigation.selectedItemId = menuItemId
-                sharedViewModel.ackScreenSwitch()
             }
         }
-        sharedViewModel.currentScreen.observe(this, screenObserver)
     }
 
     private fun setListeners() {
-        binding.addButton.setOnClickListener { sharedViewModel.pressAddButton() }
+        binding.addButton.setOnClickListener { sharedViewModel.addEvent.emit() }
     }
 
     private fun setUpBottomNav() {

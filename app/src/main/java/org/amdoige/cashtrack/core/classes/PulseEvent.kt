@@ -2,12 +2,14 @@ package org.amdoige.cashtrack.core.classes
 
 import androidx.lifecycle.LifecycleOwner
 
-class PulseEvent : EventLivedata<Boolean>() {
-    fun emit() = emit(true)
+class PulseEvent {
+    private val event = EventLivedata<Boolean>()
 
-    fun queue() = queue(true)
+    fun emit() = event.emit(true)
 
-    fun observePulse(owner: LifecycleOwner, handler: () -> Unit) {
-        super.observe(owner) { handler() }
+    fun queue() = event.queue(true)
+
+    fun observe(owner: LifecycleOwner, handler: () -> Unit) {
+        event.observe(owner) { handler() }
     }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
-open class EventLivedata<T> {
+class EventLivedata<T> {
     private val liveData: MutableLiveData<T?> = MutableLiveData(null)
 
     fun observe(owner: LifecycleOwner, handler: (T) -> Unit) {

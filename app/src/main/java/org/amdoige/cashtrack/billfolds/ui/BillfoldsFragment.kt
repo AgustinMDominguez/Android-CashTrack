@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.amdoige.cashtrack.billfolds.BillfoldsViewModel
 import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
@@ -39,7 +38,7 @@ class BillfoldsFragment : Fragment() {
     }
 
     private fun setLivedataObservers() {
-        sharedViewModel.addEvent.observePulse(viewLifecycleOwner) {
+        sharedViewModel.addEvent.observe(viewLifecycleOwner) {
             binding.newWalletFragment.visibility = View.VISIBLE
         }
     }

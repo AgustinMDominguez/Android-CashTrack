@@ -38,7 +38,7 @@ class BillfoldsFragment : Fragment() {
     }
 
     private fun setLivedataObservers() {
-        sharedViewModel.addEvent.observe(viewLifecycleOwner) {
+        sharedViewModel.addPulse.observe(viewLifecycleOwner) {
             binding.newWalletFragment.visibility = View.VISIBLE
         }
     }

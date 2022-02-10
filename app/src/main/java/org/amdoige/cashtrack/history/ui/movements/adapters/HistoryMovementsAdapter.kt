@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.amdoige.cashtrack.R
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.databinding.SingleMovementViewBinding
-import java.text.DecimalFormat
 
 
 class HistoryMovementsAdapter :

@@ -72,7 +72,7 @@ class HistoryFragment : Fragment() {
         val balanceObserver = Observer<String> { binding.balanceAmount.text = it }
         viewModel.balanceString.observe(viewLifecycleOwner, balanceObserver)
 
-        sharedViewModel.addEvent.observe(viewLifecycleOwner) {
+        sharedViewModel.addPulse.observe(viewLifecycleOwner) {
             binding.newMovementFragment.visibility = View.VISIBLE
         }
 

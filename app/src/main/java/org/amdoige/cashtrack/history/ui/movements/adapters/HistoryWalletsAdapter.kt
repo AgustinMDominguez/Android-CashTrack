@@ -41,13 +41,13 @@ class HistoryWalletsAdapter :
             itemBinding.walletIcon.setImageDrawable(drawableIcon)
             itemBinding.walletCurrentBalance.text = wallet.getBalanceString()
 
-            val limitPeriodString: String = when(wallet.limitPeriod) {
+            val limitPeriodString: String = when (wallet.limitPeriod) {
                 'd' -> "day"
                 'w' -> "week"
                 'm' -> "month"
                 else -> "--"
             }
-            if(wallet.limit >= 0.0) {
+            if (wallet.limit >= 0.0) {
                 val limitString = "${wallet.limit} /$limitPeriodString"
                 itemBinding.walletLimit.text = limitString
             } else {

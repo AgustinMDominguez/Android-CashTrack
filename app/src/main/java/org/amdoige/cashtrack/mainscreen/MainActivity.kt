@@ -2,7 +2,6 @@ package org.amdoige.cashtrack.mainscreen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        binding.addButton.setOnClickListener { sharedViewModel.addEvent.emit() }
+        binding.addButton.setOnClickListener { sharedViewModel.addPulse.emit() }
     }
 
     private fun setUpBottomNav() {

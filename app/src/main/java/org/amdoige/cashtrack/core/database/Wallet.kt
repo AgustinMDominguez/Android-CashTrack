@@ -1,12 +1,10 @@
 package org.amdoige.cashtrack.core.database
 
-import android.content.res.Resources
 import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import org.amdoige.cashtrack.R
-import org.amdoige.cashtrack.core.CashTrackApplication
 import java.text.DecimalFormat
 
 @Entity(tableName = "wallet_table")

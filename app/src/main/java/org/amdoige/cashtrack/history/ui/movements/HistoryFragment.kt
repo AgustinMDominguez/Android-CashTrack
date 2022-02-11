@@ -81,5 +81,9 @@ class HistoryFragment : Fragment() {
             binding.newMovementFragment.visibility = View.GONE
             Timber.i("New Movement added: $it")
         }
+
+        sharedViewModel.closeNewElementFragment.observe(viewLifecycleOwner) {
+            binding.newMovementFragment.visibility = View.GONE
+        }
     }
 }

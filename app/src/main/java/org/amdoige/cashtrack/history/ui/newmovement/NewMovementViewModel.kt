@@ -1,12 +1,10 @@
 package org.amdoige.cashtrack.history.ui.newmovement
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import org.amdoige.cashtrack.core.database.Movement
+import org.amdoige.cashtrack.core.database.Wallet
 
 class NewMovementViewModel(private val walletsRepository: WalletsRepository) : ViewModel() {
     val walletId: MutableLiveData<Long?> = MutableLiveData(null)
@@ -14,6 +12,10 @@ class NewMovementViewModel(private val walletsRepository: WalletsRepository) : V
     val milliseconds: MutableLiveData<Long?> = MutableLiveData(null)
     val title: MutableLiveData<String> = MutableLiveData("Movement")
     val description: MutableLiveData<String?> = MutableLiveData(null)
+
+    private val _walletOptions: MutableLiveData<List<Wallet>> = MutableLiveData(listOf())
+    val walletOptions: LiveData<List<Wallet>>
+        get() = _walletOptions
 
 
     init {

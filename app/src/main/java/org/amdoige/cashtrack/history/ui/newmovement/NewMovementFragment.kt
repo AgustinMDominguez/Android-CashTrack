@@ -34,26 +34,11 @@ class NewMovementFragment : Fragment() {
             this,
             NewMovementViewModel.Companion.Factory(walletsRepository)
         )[NewMovementViewModel::class.java]
+
         setListeners()
     }
 
     private fun setListeners() {
-        binding.randomMovementButton.setOnClickListener { addRandomMovement() }
-    }
-
-    private fun addRandomMovement(forceAmount: Double? = null) {
-        val amount = forceAmount ?: run {
-            val sign = if ((0..1).random() == 0) 1.0 else -1.0
-            val units = (10..1000).random().toDouble()
-            val cents = (0..99).random().toDouble() / 100.0
-            sign * units + cents
-        }
-        viewModel.amount.value = amount
-        val newMovement = viewModel.getCreatedMovement()
-        if (newMovement != null) {
-            sharedViewModel.movementCreationEvent.emit(newMovement)
-        } else {
-            Timber.e("Could not create newMovement!")
-        }
+        binding.cancelButton.setOnClickListener { sharedViewModel.closeNewElementFragment.emit() }
     }
 }

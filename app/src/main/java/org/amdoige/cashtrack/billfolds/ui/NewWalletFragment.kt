@@ -25,8 +25,10 @@ class NewWalletFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setLivedataObservers()
+        setListeners()
     }
 
-    private fun setLivedataObservers() {}
+    private fun setListeners() {
+        binding.cancelButton.setOnClickListener { sharedViewModel.closeNewElementFragment.emit() }
+    }
 }

@@ -9,6 +9,7 @@ import org.amdoige.cashtrack.core.database.Wallet
 
 class SharedViewModel : ViewModel() {
     val addPulse = PulseEvent()
+    val closeNewElementFragment = PulseEvent()
     val walletCreationEvent = EventLivedata<Wallet>()
     val movementCreationEvent = EventLivedata<Movement>()
     val switchScreenEvent = EventLivedata<MainFragments>()

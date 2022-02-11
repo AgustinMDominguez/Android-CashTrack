@@ -41,5 +41,9 @@ class BillfoldsFragment : Fragment() {
         sharedViewModel.addPulse.observe(viewLifecycleOwner) {
             binding.newWalletFragment.visibility = View.VISIBLE
         }
+
+        sharedViewModel.closeNewElementFragment.observe(viewLifecycleOwner) {
+            binding.newWalletFragment.visibility = View.GONE
+        }
     }
 }

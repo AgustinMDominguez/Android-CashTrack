@@ -17,6 +17,8 @@ class EventLivedata<T> {
         liveData.observe(owner, observer)
     }
 
+    fun isHandled(): Boolean = liveData.value == null
+
     fun emit(data: T) {
         liveData.value = data
     }

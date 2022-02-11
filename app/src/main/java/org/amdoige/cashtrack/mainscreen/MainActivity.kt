@@ -2,6 +2,7 @@ package org.amdoige.cashtrack.mainscreen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -32,10 +33,17 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.selectedItemId = menuItemId
             }
         }
+
+        sharedViewModel.closeDevOptions.observe(this) {
+            binding.devOptionsFragment.visibility = View.GONE
+        }
     }
 
     private fun setListeners() {
         binding.addButton.setOnClickListener { sharedViewModel.addPulse.emit() }
+        binding.devOptionsButton.setOnClickListener {
+            binding.devOptionsFragment.visibility = View.VISIBLE
+        }
     }
 
     private fun setUpBottomNav() {

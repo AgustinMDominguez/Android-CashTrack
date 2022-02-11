@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".mainscreen.DevOptionsFragment"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/dev_add_one_movement_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+1 Movement"
+        />
+
+    <Button
+        android:id="@+id/dev_add_one_hundred_movements_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+100 Movement"
+        />
+
+    <Button
+        android:id="@+id/dev_add_one_wallet_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+1 Wallet"
+        />
+
+    <Button
+        android:id="@+id/dev_delete_movements_button"
+        android:backgroundTint="@color/purple_700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete movements"
+        />
+
+    <Button
+        android:id="@+id/dev_delete_wallets_button"
+        android:backgroundTint="@color/purple_700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete wallets"
+        />
+
+    <Button
+        android:id="@+id/dev_exit_button"
+        android:backgroundTint="@color/purple_700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        />
+
+</LinearLayout>

@@ -10,13 +10,13 @@ import java.util.*
 import kotlin.math.min
 
 class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
-    private var walletsListCache: List<Wallet>? = null
+    private var walletsListCache: MutableList<Wallet>? = null
     private var walletsMapCache: MutableMap<Long, Wallet> = mutableMapOf()
 
     suspend fun getAllWallets(): List<Wallet> = withContext(Dispatchers.IO) {
         var myWallets = walletsListCache
         if (myWallets.isNullOrEmpty()) {
-            myWallets = cashTrackDatabase.dao.getWallets()
+            myWallets = cashTrackDatabase.dao.getWallets().toMutableList()
             walletsListCache = myWallets
             myWallets.forEach { walletsMapCache[it.id] = it }
         }
@@ -29,7 +29,7 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
     }
 
     suspend fun getAllWalletsWithBalance(): List<Wallet> = withContext(Dispatchers.IO) {
-        var myWallets = walletsListCache
+        var myWallets = walletsListCache?.toList()
         if (myWallets.isNullOrEmpty() || myWallets[0].balance == null) {
             myWallets = getAllWallets()
             val asyncJobs = mutableListOf<Deferred<Unit>>()
@@ -40,14 +40,14 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
                 })
             }
             asyncJobs.awaitAll()
-            walletsListCache = myWallets
+            walletsListCache = myWallets.toMutableList()
         }
         myWallets
     }
 
-    suspend fun getWalletById(walletId: Long): Wallet? {
+    suspend fun getWalletById(walletId: Long, forceBalanceFetched: Boolean = false): Wallet? {
         val cachedWallet = walletsMapCache[walletId]
-        return if (cachedWallet == null) {
+        val returnWallet = if (cachedWallet == null) {
             val fetchedWallet = withContext(Dispatchers.IO) {
                 cashTrackDatabase.dao.getWallet(walletId)
             }
@@ -56,8 +56,30 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
             }
             fetchedWallet
         } else {
-            Timber.i("Wallet cached!")
             cachedWallet
+        }
+        return if (returnWallet != null && forceBalanceFetched && returnWallet.balance == null) {
+            returnWallet.balance = getWalletBalance(returnWallet)
+            walletsMapCache[returnWallet.id] = returnWallet
+            returnWallet
+        } else {
+            returnWallet
+        }
+    }
+
+    suspend fun updateWallet(walletId: Long) = withContext(Dispatchers.IO) {
+        val wallet = cashTrackDatabase.dao.getWallet(walletId)
+        wallet?.let { fetchedWallet ->
+            fetchedWallet.balance = getWalletBalance(fetchedWallet)
+            walletsMapCache[walletId] = fetchedWallet
+            walletsListCache?.let { listCache ->
+                val replaceIndex = listCache.indexOfFirst { it.id == walletId }
+                try {
+                    listCache.set(replaceIndex, wallet)
+                } catch (e: IndexOutOfBoundsException) {
+                    Timber.e("Index out of bounds. $listCache")
+                }
+            }
         }
     }
 
@@ -96,22 +118,6 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
         return min(movementSum, fundBalance)
     }
 
-    suspend fun getDefaultWallet(): Wallet {
-        val preferencesManager = SharedPreferencesManager()
-        val defaultWalletId =
-            withContext(Dispatchers.IO) { preferencesManager.getDefaultWalletId() }
-        Timber.i("Default Wallet Id: $defaultWalletId")
-
-        return when (defaultWalletId) {
-            null -> makeAWalletDefault(preferencesManager)
-            else -> withContext(Dispatchers.IO) {
-                cashTrackDatabase.dao.getWallet(defaultWalletId) ?: makeAWalletDefault(
-                    preferencesManager
-                )
-            }
-        }
-    }
-
     suspend fun addWalletInfoToMovements(movements: List<Movement>): List<Movement> {
         return withContext(Dispatchers.IO) {
             val asyncJobs = mutableListOf<Deferred<Unit>>()
@@ -126,6 +132,22 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
             }
             asyncJobs.awaitAll()
             movements
+        }
+    }
+
+    suspend fun getDefaultWallet(): Wallet {
+        val preferencesManager = SharedPreferencesManager()
+        val defaultWalletId =
+            withContext(Dispatchers.IO) { preferencesManager.getDefaultWalletId() }
+        Timber.i("Default Wallet Id: $defaultWalletId")
+
+        return when (defaultWalletId) {
+            null -> makeAWalletDefault(preferencesManager)
+            else -> withContext(Dispatchers.IO) {
+                cashTrackDatabase.dao.getWallet(defaultWalletId) ?: makeAWalletDefault(
+                    preferencesManager
+                )
+            }
         }
     }
 

@@ -2,7 +2,9 @@ package org.amdoige.cashtrack.history.ui.movements
 
 import androidx.lifecycle.*
 import androidx.paging.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
@@ -55,6 +57,20 @@ class HistoryViewModel(
                 updateBalance()
             } else {
                 _balance.value = currentBalance + newMovement.amount
+            }
+            updateWalletFromNewMovement(newMovement)
+        }
+    }
+
+    private suspend fun updateWalletFromNewMovement(newMovement: Movement) {
+        walletsRepository.updateWallet(newMovement.walletId)
+        withContext(Dispatchers.Default) {
+            walletsRepository.getWalletById(newMovement.walletId)?.let { updatedWallet ->
+                val mutableList = wallets.value?.toMutableList()
+                mutableList?.let {
+                    val replaceIndex = it.indexOfFirst { wallet -> wallet.id == newMovement.id }
+                    it[replaceIndex] = updatedWallet
+                }
             }
         }
     }

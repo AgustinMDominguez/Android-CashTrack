@@ -67,17 +67,19 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
         }
     }
 
-    suspend fun updateWallet(walletId: Long) = withContext(Dispatchers.IO) {
-        val wallet = cashTrackDatabase.dao.getWallet(walletId)
-        wallet?.let { fetchedWallet ->
+    suspend fun updateWalletFromDatabase(walletId: Long) = withContext(Dispatchers.IO) {
+        cashTrackDatabase.dao.getWallet(walletId)?.let { fetchedWallet ->
             fetchedWallet.balance = getWalletBalance(fetchedWallet)
             walletsMapCache[walletId] = fetchedWallet
             walletsListCache?.let { listCache ->
                 val replaceIndex = listCache.indexOfFirst { it.id == walletId }
-                try {
-                    listCache.set(replaceIndex, wallet)
-                } catch (e: IndexOutOfBoundsException) {
-                    Timber.e("Index out of bounds. $listCache")
+                if (replaceIndex >= 0) {
+                    listCache[replaceIndex] = fetchedWallet
+                } else {
+                    Timber.e(
+                        "updateWalletFromDatabase tried to update repository cache " +
+                                "with index out of bounds"
+                    )
                 }
             }
         }

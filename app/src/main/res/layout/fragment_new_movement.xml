@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".history.ui.newmovement.NewMovementFragment">
+    tools:context=".history.ui.newmovement.NewMovementFragment"
+    tools:ignore="Overdraw">
 
     <ImageButton
         android:id="@+id/cancel_button"
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@android:color/transparent"
         app:tint="@color/white"
+        android:contentDescription="@string/x_button_content_description"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

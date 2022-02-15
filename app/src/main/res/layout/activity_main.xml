@@ -34,7 +34,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginBottom="-35dp"
-        android:contentDescription="Add"
+        android:contentDescription="@string/add_button_content_description"
         android:elevation="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_baseline_add_24"
@@ -48,14 +48,14 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Add"
         android:elevation="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_aperture_1"
         app:layout_constraintBottom_toTopOf="@+id/add_button"
         app:layout_constraintEnd_toEndOf="@+id/add_button"
         app:layout_constraintHorizontal_bias="0.50"
-        app:layout_constraintStart_toStartOf="@+id/add_button" />
+        app:layout_constraintStart_toStartOf="@+id/add_button"
+        tools:ignore="HardcodedText"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/dev_options_fragment"

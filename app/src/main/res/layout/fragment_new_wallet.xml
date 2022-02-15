@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
+    tools:ignore="Overdraw"
     tools:context=".billfolds.ui.NewWalletFragment">
 
     <ImageButton
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@android:color/transparent"
         app:tint="@color/white"
+        android:contentDescription="@string/x_button_content_description"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

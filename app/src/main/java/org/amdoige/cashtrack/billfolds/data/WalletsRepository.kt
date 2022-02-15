@@ -7,7 +7,6 @@ import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import timber.log.Timber
 import java.util.*
-import kotlin.coroutines.coroutineContext
 import kotlin.math.min
 
 class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {

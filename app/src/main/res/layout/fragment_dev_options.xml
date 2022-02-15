@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".mainscreen.DevOptionsFragment"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    tools:ignore="HardcodedText">
 
     <Button
         android:id="@+id/dev_add_one_movement_button"

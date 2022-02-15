@@ -1,16 +1,15 @@
 package org.amdoige.cashtrack.history.ui.newmovement
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
 import org.amdoige.cashtrack.databinding.FragmentNewMovementBinding
 import org.amdoige.cashtrack.mainscreen.SharedViewModel
-import timber.log.Timber
 
 class NewMovementFragment : Fragment() {
     private lateinit var binding: FragmentNewMovementBinding

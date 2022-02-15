@@ -7,4 +7,7 @@
     <string name="default_wallet_logo" tools:ignore="ReferenceType">@drawable/ic_cashtrack_wallet_1</string>
     <string name="home_ic_title">Home</string>
     <string name="wallets_ic_title">Wallets</string>
+    <string name="x_button_content_description">exit</string>
+    <string name="wallet_icon_content_description">movement logo</string>
+    <string name="add_button_content_description">Add Button</string>
 </resources>

@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.amdoige.cashtrack.billfolds.data.WalletsRepository
 import org.amdoige.cashtrack.core.classes.WalletsRepositoryProvider
 import org.amdoige.cashtrack.core.database.CashTrackDatabase

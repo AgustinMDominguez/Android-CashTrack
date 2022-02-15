@@ -14,7 +14,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_cashtrack_wallet_1" />
+        tools:src="@drawable/ic_cashtrack_wallet_1"
+        android:contentDescription="@string/wallet_icon_content_description" />
 
     <TextView
         android:id="@+id/transaction_amount"

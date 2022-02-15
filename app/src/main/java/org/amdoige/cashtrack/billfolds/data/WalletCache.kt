@@ -2,7 +2,7 @@ package org.amdoige.cashtrack.billfolds.data
 
 import org.amdoige.cashtrack.core.database.Wallet
 
-class WalletCache() {
+class WalletCache {
     private var walletsListCache: MutableList<Wallet>? = null
     private var walletsMapCache: MutableMap<Long, Wallet> = mutableMapOf()
     private var updated: Boolean = false

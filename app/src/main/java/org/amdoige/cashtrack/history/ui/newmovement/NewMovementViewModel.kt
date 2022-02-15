@@ -20,10 +20,15 @@ class NewMovementViewModel(private val walletsRepository: WalletsRepository) : V
 
     init {
         fetchDefaultWalletId()
+        fetchWalletOptions()
     }
 
     private fun fetchDefaultWalletId() {
         viewModelScope.launch { walletId.postValue(walletsRepository.getDefaultWallet().id) }
+    }
+
+    private fun fetchWalletOptions() {
+        viewModelScope.launch { _walletOptions.postValue(walletsRepository.getAllWalletsWithBalance()) }
     }
 
     fun getCreatedMovement(): Movement? {

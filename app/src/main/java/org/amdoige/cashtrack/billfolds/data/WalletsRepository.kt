@@ -7,82 +7,51 @@ import org.amdoige.cashtrack.core.database.Movement
 import org.amdoige.cashtrack.core.database.Wallet
 import timber.log.Timber
 import java.util.*
+import kotlin.coroutines.coroutineContext
 import kotlin.math.min
 
 class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
-    private var walletsListCache: MutableList<Wallet>? = null
-    private var walletsMapCache: MutableMap<Long, Wallet> = mutableMapOf()
+    private val walletCache = WalletCache()
 
-    suspend fun getAllWallets(): List<Wallet> = withContext(Dispatchers.IO) {
-        var myWallets = walletsListCache
-        if (myWallets.isNullOrEmpty()) {
-            myWallets = cashTrackDatabase.dao.getWallets().toMutableList()
-            walletsListCache = myWallets
-            myWallets.forEach { walletsMapCache[it.id] = it }
+    private suspend fun getAllWallets(): List<Wallet> = withContext(Dispatchers.IO) {
+        var cacheWallets: List<Wallet>? = walletCache.getAll()
+        if (cacheWallets == null) {
+            cacheWallets = cashTrackDatabase.dao.getWallets()
+            walletCache.cache(cacheWallets)
         }
-        myWallets
-    }
-
-    fun invalidateWalletCache() {
-        walletsListCache = null
-        walletsMapCache = mutableMapOf()
+        cacheWallets
     }
 
     suspend fun getAllWalletsWithBalance(): List<Wallet> = withContext(Dispatchers.IO) {
-        var myWallets = walletsListCache?.toList()
-        if (myWallets.isNullOrEmpty() || myWallets[0].balance == null) {
-            myWallets = getAllWallets()
-            val asyncJobs = mutableListOf<Deferred<Unit>>()
-            myWallets.forEach {
-                asyncJobs.add(async {
-                    it.balance = getWalletBalance(it)
-                    walletsMapCache[it.id] = it
-                })
-            }
-            asyncJobs.awaitAll()
-            walletsListCache = myWallets.toMutableList()
+        var myWallets = getAllWallets()
+        if (myWallets[0].balance == null) {
+            myWallets = addBalanceToWallets(myWallets)
+            walletCache.cache(myWallets)
         }
         myWallets
     }
 
-    suspend fun getWalletById(walletId: Long, forceBalanceFetched: Boolean = false): Wallet? {
-        val cachedWallet = walletsMapCache[walletId]
-        val returnWallet = if (cachedWallet == null) {
-            val fetchedWallet = withContext(Dispatchers.IO) {
-                cashTrackDatabase.dao.getWallet(walletId)
-            }
-            if (fetchedWallet != null) {
-                walletsMapCache[walletId] = fetchedWallet
-            }
-            fetchedWallet
-        } else {
-            cachedWallet
-        }
-        return if (returnWallet != null && forceBalanceFetched && returnWallet.balance == null) {
-            returnWallet.balance = getWalletBalance(returnWallet)
-            walletsMapCache[returnWallet.id] = returnWallet
-            returnWallet
-        } else {
-            returnWallet
+    private suspend fun addBalanceToWallets(wallets: List<Wallet>): List<Wallet> {
+        return withContext(Dispatchers.IO) {
+            val asyncJobs = mutableListOf<Deferred<Unit>>()
+            wallets.forEach { asyncJobs.add(async { it.balance = getWalletBalance(it) }) }
+            asyncJobs.awaitAll()
+            wallets
         }
     }
 
-    suspend fun updateWalletFromDatabase(walletId: Long) = withContext(Dispatchers.IO) {
-        cashTrackDatabase.dao.getWallet(walletId)?.let { fetchedWallet ->
-            fetchedWallet.balance = getWalletBalance(fetchedWallet)
-            walletsMapCache[walletId] = fetchedWallet
-            walletsListCache?.let { listCache ->
-                val replaceIndex = listCache.indexOfFirst { it.id == walletId }
-                if (replaceIndex >= 0) {
-                    listCache[replaceIndex] = fetchedWallet
-                } else {
-                    Timber.e(
-                        "updateWalletFromDatabase tried to update repository cache " +
-                                "with index out of bounds"
-                    )
-                }
-            }
+    suspend fun getWalletById(walletId: Long, forceBalanceFetched: Boolean = false): Wallet? {
+        val wallet = walletCache.get(walletId) ?: withContext(Dispatchers.IO) {
+            cashTrackDatabase.dao.getWallet(walletId)
         }
+        if (wallet != null && forceBalanceFetched && wallet.balance == null) {
+            wallet.balance = withContext(Dispatchers.IO) { getWalletBalance(wallet) }
+        }
+        return wallet
+    }
+
+    suspend fun notifyNewMovementInWallet(walletId: Long) = withContext(Dispatchers.IO) {
+        cashTrackDatabase.dao.getWallet(walletId)?.let { walletCache.update(it) }
     }
 
     suspend fun getWalletBalance(wallet: Wallet, currentFundBalance: Double? = null): Double {
@@ -107,9 +76,9 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }
-            Timber.i("getWalletBalance between $calendar and now")
+            Timber.i("getWalletBalance between ${calendar.toInstant()} and now")
             startMilli = calendar.timeInMillis
-            endMilli = nowMilli + 5000L
+            endMilli = nowMilli + 10000L
         }
         val movementSum = withContext(Dispatchers.IO) {
             cashTrackDatabase.dao.getWalletMovementSumFromRange(wallet.id, startMilli, endMilli)

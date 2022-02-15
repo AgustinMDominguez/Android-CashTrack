@@ -56,7 +56,7 @@ class HistoryViewModel(
             } else {
                 _balance.value = currentBalance + newMovement.amount
             }
-            walletsRepository.updateWalletFromDatabase(newMovement.walletId)
+            walletsRepository.notifyNewMovementInWallet(newMovement.walletId)
             _wallets.postValue(walletsRepository.getAllWalletsWithBalance())
         }
     }

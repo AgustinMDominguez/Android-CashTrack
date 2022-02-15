@@ -47,6 +47,11 @@ class HistoryFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, true)
         binding.recyclerWallets.adapter = walletsAdapter
 
+        initializeViewModel()
+        setLivedataObservers()
+    }
+
+    private fun initializeViewModel() {
         val cashTrackDatabase = CashTrackDatabase.getInstance(requireContext())
         val walletRepository = WalletsRepositoryProvider.getRepository(requireContext())
         val pagingDatabaseIntermediary = PagingDatabaseIntermediary(
@@ -57,7 +62,6 @@ class HistoryFragment : Fragment() {
             this,
             HistoryViewModel.Companion.Factory(historyRepository, walletRepository)
         )[HistoryViewModel::class.java]
-        setLivedataObservers()
     }
 
     private fun setLivedataObservers() {

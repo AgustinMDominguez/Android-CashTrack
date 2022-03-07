@@ -23,6 +23,10 @@ class WalletsRepository(private val cashTrackDatabase: CashTrackDatabase) {
 
     suspend fun getAllWalletsWithBalance(): List<Wallet> = withContext(Dispatchers.IO) {
         var myWallets = getAllWallets()
+        if (myWallets.isEmpty()) {
+            makeAWalletDefault()
+            myWallets = getAllWallets()
+        }
         if (myWallets[0].balance == null) {
             myWallets = addBalanceToWallets(myWallets)
             walletCache.cache(myWallets)
